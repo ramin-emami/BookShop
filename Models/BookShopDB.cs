@@ -46,7 +46,7 @@ namespace BookShop.Models
         public bool? Delete { get; set; }
         public int PublisherID { get; set; }
 
-        [Column(TypeName = "image")]
+        [Column(TypeName ="image")]
         public byte[] Image { get; set; }
         public int LanguageID { get; set; }
         public virtual Language Language
@@ -81,8 +81,8 @@ namespace BookShop.Models
         [Key]
         public int PublisherID { get; set; }
 
-        [Display(Name = "ناشر")]
-        [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
+        [Display(Name ="ناشر")]
+        [Required(ErrorMessage ="وارد نمودن {0} الزامی است.")]
         public string PublisherName { get; set; }
 
         public virtual List<Book> Books { get; set; }
@@ -172,7 +172,7 @@ namespace BookShop.Models
 
     public class Discount
     {
-        [Key, ForeignKey("Book")]
+        [Key,ForeignKey("Book")]
         public int BookID { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -185,8 +185,8 @@ namespace BookShop.Models
     {
         public int LanguageID { get; set; }
 
-        [Display(Name = "زبان")]
-        [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
+        [Display(Name ="زبان")]
+        [Required(ErrorMessage ="وارد نمودن {0} الزامی است.")]
         public string LanguageName { get; set; }
 
         public virtual List<Book> Books { get; set; }

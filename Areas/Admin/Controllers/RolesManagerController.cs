@@ -84,6 +84,7 @@ namespace BookShop.Areas.Admin.Controllers
                 RoleID = Role.Id,
                 RoleName = Role.Name,
                 Description = Role.Description,
+                RecentRoleName=Role.Name,
             };
 
             return View(RoleVM);
@@ -101,7 +102,7 @@ namespace BookShop.Areas.Admin.Controllers
                     return NotFound();
                 }
 
-                if(await _roleManager.RoleExistsAsync(ViewModel.RoleName))
+                if(await _roleManager.RoleExistsAsync(ViewModel.RoleName) && ViewModel.RecentRoleName!=ViewModel.RoleName)
                 {
                     ViewBag.Error = "خطا !!! این نقش تکراری است.";
                 }
