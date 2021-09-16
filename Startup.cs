@@ -57,7 +57,8 @@ namespace BookShop
 
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddPaging(options=>{
+            services.AddPaging(options =>
+            {
                 options.ViewName = "Bootstrap4";
                 options.HtmlIndicatorDown = "<i class='fa fa-sort-amount-down'></i>";
                 options.HtmlIndicatorUp = "<i class='fa fa-sort-amount-up'></i>";
@@ -70,11 +71,6 @@ namespace BookShop
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "node_modules")),
-                    RequestPath = "/" + "node_modules",
-                });
             }
             else
             {
