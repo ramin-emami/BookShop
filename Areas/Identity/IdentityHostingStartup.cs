@@ -1,6 +1,6 @@
 ﻿using System;
 using BookShop.Areas.Identity.Data;
-using BookShop.Data;
+using BookShop.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -20,8 +20,13 @@ namespace BookShop.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("IdentityDBContextConnection")));
 
-                services.AddDefaultIdentity<BookShopUser>()
-                    .AddEntityFrameworkStores<IdentityDBContext>();
+                //services.AddDefaultIdentity<BookShopUser>()
+                //    .AddEntityFrameworkStores<IdentityDBContext>();
+
+                services.AddIdentity<BookShopUser,ApplicationRole>()
+                   .AddDefaultUI()
+                   .AddEntityFrameworkStores<IdentityDBContext>()
+                   .AddDefaultTokenProviders();
             });
         }
     }

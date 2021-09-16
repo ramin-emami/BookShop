@@ -36,6 +36,10 @@
     <None Include="Areas\Admin\Views\Provinces\Delete.cshtml" />
     <None Include="Areas\Admin\Views\Provinces\Edit.cshtml" />
     <None Include="Areas\Admin\Views\Provinces\Index.cshtml" />
+    <None Include="Areas\Admin\Views\RolesManager\AddRole.cshtml" />
+    <None Include="Areas\Admin\Views\RolesManager\DeleteRole.cshtml" />
+    <None Include="Areas\Admin\Views\RolesManager\EditRole.cshtml" />
+    <None Include="Areas\Admin\Views\RolesManager\Index.cshtml" />
     <None Include="Areas\Admin\Views\Sample\Index.cshtml" />
     <None Include="Areas\Admin\Views\Translators\Create.cshtml" />
     <None Include="Areas\Admin\Views\Translators\Delete.cshtml" />
@@ -43,6 +47,11 @@
     <None Include="Areas\Admin\Views\Translators\Index.cshtml" />
     <None Include="Areas\Admin\Views\_ViewImports.cshtml" />
     <None Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <None Include="Areas\Identity\Pages\Account\Register.cshtml" />
+    <None Include="Areas\Identity\Pages\Account\_ViewImports.cshtml" />
+    <None Include="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
+    <None Include="Areas\Identity\Pages\_ViewImports.cshtml" />
+    <None Include="Areas\Identity\Pages\_ViewStart.cshtml" />
     <None Include="Views\Home\About.cshtml" />
     <None Include="Views\Home\Contact.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
@@ -351,6 +360,37 @@
 		<PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
 		<PackageReference Include="ReflectionIT.Mvc.Paging" Version="3.3.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="Areas\Identity\Pages\Account\Manage\Index.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Update="Areas\Identity\Pages\Account\Manage\_ViewImports.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Update="Areas\Identity\Pages\Account\Register.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Update="Areas\Identity\Pages\Account\_ViewImports.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Update="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Update="Areas\Identity\Pages\_ViewImports.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Update="Areas\Identity\Pages\_ViewStart.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
 	</ItemGroup>
 
 </Project>
