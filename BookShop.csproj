@@ -45,6 +45,7 @@
     <None Include="Areas\Admin\Views\Translators\Delete.cshtml" />
     <None Include="Areas\Admin\Views\Translators\Edit.cshtml" />
     <None Include="Areas\Admin\Views\Translators\Index.cshtml" />
+    <None Include="Areas\Admin\Views\UsersManager\Index.cshtml" />
     <None Include="Areas\Admin\Views\_ViewImports.cshtml" />
     <None Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <None Include="Areas\Identity\Pages\Account\Manage\Index.cshtml" />
