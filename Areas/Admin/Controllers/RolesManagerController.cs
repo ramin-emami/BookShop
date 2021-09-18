@@ -44,22 +44,16 @@ namespace BookShop.Areas.Admin.Controllers
         {
             if(ModelState.IsValid)
             {
-                if(await _roleManager.RoleExistsAsync(ViewModel.RoleName))
+                var Result = await _roleManager.CreateAsync(new ApplicationRole(ViewModel.RoleName, ViewModel.Description));
+                if (Result.Succeeded)
                 {
-                    ViewBag.Error = "خطا !!! این نقش تکراری است.";
+                    return RedirectToAction("Index");
                 }
 
-                else
+                foreach(var item in Result.Errors)
                 {
-                    var Result = await _roleManager.CreateAsync(new ApplicationRole(ViewModel.RoleName, ViewModel.Description));
-                    if (Result.Succeeded)
-                    {
-                        return RedirectToAction("Index");
-                    }
-
-                    ViewBag.Error = "در ذخیره اطلاعات خطایی رخ داده است.";
+                    ModelState.AddModelError("", item.Description);
                 }
-               
             }
 
             return View(ViewModel);
@@ -84,7 +78,6 @@ namespace BookShop.Areas.Admin.Controllers
                 RoleID = Role.Id,
                 RoleName = Role.Name,
                 Description = Role.Description,
-                RecentRoleName=Role.Name,
             };
 
             return View(RoleVM);
@@ -102,26 +95,18 @@ namespace BookShop.Areas.Admin.Controllers
                     return NotFound();
                 }
 
-                if(await _roleManager.RoleExistsAsync(ViewModel.RoleName) && ViewModel.RecentRoleName!=ViewModel.RoleName)
+                Role.Name = ViewModel.RoleName;
+                Role.Description = ViewModel.Description;
+
+                var Result = await _roleManager.UpdateAsync(Role);
+                if (Result.Succeeded)
                 {
-                    ViewBag.Error = "خطا !!! این نقش تکراری است.";
+                    ViewBag.Success = "ذخیره تغییرات با موفقیت انجام شد.";
                 }
 
-                else
+                foreach(var item in Result.Errors)
                 {
-                    Role.Name = ViewModel.RoleName;
-                    Role.Description = ViewModel.Description;
-
-                    var Result = await _roleManager.UpdateAsync(Role);
-                    if (Result.Succeeded)
-                    {
-                        ViewBag.Success = "ذخیره تغییرات با موفقیت انجام شد.";
-                    }
-
-                    else
-                    {
-                        ViewBag.Error = "خطایی در ذخیره تغییرات رخ داده است.";
-                    }
+                    ModelState.AddModelError("", item.Description);
                 }
             }
 

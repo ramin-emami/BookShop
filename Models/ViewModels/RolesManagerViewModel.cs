@@ -21,6 +21,5 @@ namespace BookShop.Models.ViewModels
         [Display(Name = "کاربران")]
         public int UsersCount { get; set; }
 
-        public string RecentRoleName { get; set; }
     }
 }

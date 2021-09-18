@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BookShop.Migrations.IdentityDB
+namespace BookShop.Migrations
 {
     [DbContext(typeof(IdentityDBContext))]
     partial class IdentityDBContextModelSnapshot : ModelSnapshot
@@ -70,7 +70,7 @@ namespace BookShop.Migrations.IdentityDB
 
                     b.Property<string>("LastName");
 
-                    b.Property<DateTime>("LastVisitDateTime");
+                    b.Property<DateTime?>("LastVisitDateTime");
 
                     b.Property<bool>("LockoutEnabled");
 

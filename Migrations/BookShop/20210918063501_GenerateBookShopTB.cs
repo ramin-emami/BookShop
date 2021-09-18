@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
 
-namespace BookShop.Migrations
+namespace BookShop.Migrations.BookShop
 {
-    public partial class GenerateDBandRelationbetweenAllTableBeforeIdentity : Migration
+    public partial class GenerateBookShopTB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -170,15 +170,12 @@ namespace BookShop.Migrations
                 columns: table => new
                 {
                     CustomerID = table.Column<string>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
-                    BirthDate = table.Column<DateTime>(nullable: false),
                     Address1 = table.Column<string>(nullable: true),
                     Address2 = table.Column<string>(nullable: true),
-                    Mobile = table.Column<string>(nullable: true),
                     Tell = table.Column<string>(nullable: true),
                     Image = table.Column<string>(nullable: true),
-                    Age = table.Column<int>(nullable: false),
+                    PostalCode1 = table.Column<string>(nullable: true),
+                    PostalCode2 = table.Column<string>(nullable: true),
                     CityID1 = table.Column<int>(nullable: false),
                     CityID2 = table.Column<int>(nullable: false)
                 },

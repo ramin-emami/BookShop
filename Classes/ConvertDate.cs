@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookShop.Classes
 {
-    public class ConvertDate
+    public class ConvertDate : IConvertDate
     {
         public DateTime ConvertShamsiToMiladi(string Date)
         {

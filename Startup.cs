@@ -44,9 +44,12 @@ namespace BookShop
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ConvertDate>();
+            services.AddTransient<IConvertDate, ConvertDate>();
             services.AddTransient<BooksRepository>();
             services.AddTransient<BookShopContext>();
             services.AddScoped<IApplicationRoleManager, ApplicationRoleManager>();
+            services.AddScoped<IApplicationUserManager, ApplicationUserManager>();
+            services.AddScoped<ApplicationIdentityErrorDescriber>();
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
             services.AddMvc(options =>
             {

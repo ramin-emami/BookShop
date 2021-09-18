@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BookShop.Migrations
+namespace BookShop.Migrations.BookShop
 {
     [DbContext(typeof(BookShopContext))]
-    [Migration("20210914161424_GenerateDBandRelationbetweenAllTableBeforeIdentity")]
-    partial class GenerateDBandRelationbetweenAllTableBeforeIdentity
+    [Migration("20210918063501_GenerateBookShopTB")]
+    partial class GenerateBookShopTB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -168,21 +168,15 @@ namespace BookShop.Migrations
 
                     b.Property<string>("Address2");
 
-                    b.Property<int>("Age");
-
-                    b.Property<DateTime>("BirthDate");
-
                     b.Property<int>("CityID1");
 
                     b.Property<int>("CityID2");
 
-                    b.Property<string>("FirstName");
-
                     b.Property<string>("Image");
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("PostalCode1");
 
-                    b.Property<string>("Mobile");
+                    b.Property<string>("PostalCode2");
 
                     b.Property<string>("Tell");
 

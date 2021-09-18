@@ -23,5 +23,7 @@ namespace BookShop.Areas.Identity.Data
         public override IdentityError InvalidUserName(string userName) => new IdentityError {Code=nameof(InvalidUserName),Description="نام کاربری باید شامل کاراکترهای (0-9) و (a-z) باشد."};
 
         public override IdentityError DuplicateEmail(string email) => new IdentityError { Code = nameof(DuplicateEmail), Description = $"شما با ایمیل '{email}' قبلا ثبت نام کرده اید." };
+
+        public override IdentityError DuplicateRoleName(string role) => new IdentityError { Code = nameof(DuplicateRoleName), Description = $"نقش '{role}' تکراری است." };
     }
 }

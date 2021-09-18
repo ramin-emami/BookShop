@@ -68,6 +68,7 @@
     <None Include="Views\_ViewImports.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
     <None Include="wwwroot\css\fonts\Yekan.svg" />
+    <None Include="wwwroot\css\jquery.md.bootstrap.datetimepicker.style.css.map" />
     <None Include="wwwroot\fonts\Yekan.svg" />
     <None Include="wwwroot\images\banner1.svg" />
     <None Include="wwwroot\images\banner2.svg" />
@@ -77,6 +78,9 @@
     <None Include="wwwroot\js\comboTreePlugin.js" />
     <None Include="wwwroot\js\demo.js" />
     <None Include="wwwroot\js\icontains.js" />
+    <None Include="wwwroot\js\jquery.inputmask.bundle.js" />
+    <None Include="wwwroot\js\jquery.md.bootstrap.datetimepicker.js" />
+    <None Include="wwwroot\js\jquery.md.bootstrap.datetimepicker.js.map" />
     <None Include="wwwroot\js\site.js" />
     <None Include="wwwroot\js\site.min.js" />
     <None Include="wwwroot\js\TreeView.js" />
