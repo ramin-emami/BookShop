@@ -6,6 +6,7 @@ using BookShop.Areas.Identity.Data;
 using BookShop.Classes;
 using BookShop.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using ReflectionIT.Mvc.Paging;
 
@@ -17,19 +18,22 @@ namespace BookShop.Areas.Admin.Controllers
         private readonly IApplicationUserManager _userManager;
         private readonly IApplicationRoleManager _roleManager;
         private readonly IConvertDate _converDate;
-        public UsersManagerController(IApplicationUserManager userManager, IApplicationRoleManager roleManager, IConvertDate convertDate)
+        private readonly IEmailSender _emailSender;
+        public UsersManagerController(IApplicationUserManager userManager, IApplicationRoleManager roleManager, IConvertDate convertDate, IEmailSender emailSender)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _converDate = convertDate;
+            _emailSender = emailSender;
         }
 
         public async Task<IActionResult> Index(string Msg,int page=1,int row=10)
         {
             if(Msg=="Success")
-            {
                 ViewBag.Alert = "عضویت با موفقیت انجام شد.";
-            }
+
+            if (Msg== "SendEmailSuccess")
+                ViewBag.Alert = "ارسال ایمیل به کاربران با موفقیت انجام شد.";
 
             var PagingModel = PagingList.Create(await _userManager.GetAllUsersWithRolesAsync(), row, page);
             return View(PagingModel);
@@ -60,7 +64,9 @@ namespace BookShop.Areas.Admin.Controllers
             else
             {
                 ViewBag.AllRoles = _roleManager.GetAllRoles();
-                User.PersianBirthDate = _converDate.ConvertMiladiToShamsi(User.BirthDate, "yyyy/MM/dd");
+                if(User.BirthDate!=null)
+                    User.PersianBirthDate = _converDate.ConvertMiladiToShamsi((DateTime)User.BirthDate, "yyyy/MM/dd");
+
                 return View(User);
             }
         }
@@ -148,6 +154,19 @@ namespace BookShop.Areas.Admin.Controllers
 
                 return View(User);
             }
+        }
+
+        public async Task<IActionResult> SendEmail(string[] emails,string subject,string message)
+        {
+            if(emails!=null)
+            {
+                for(int i=0;i<emails.Length;i++)
+                {
+                   await _emailSender.SendEmailAsync(emails[i], subject, message);
+                }
+            }
+
+            return RedirectToAction("Index", new { Msg = "SendEmailSuccess" });
         }
     }
 }

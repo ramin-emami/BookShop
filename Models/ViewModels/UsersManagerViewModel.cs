@@ -26,7 +26,7 @@ namespace BookShop.Models.ViewModels
         public string LastName { get; set; }
 
         [Display(Name = "تاریخ تولد")]
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
 
         [Display(Name = "تاریخ تولد")]
         public string PersianBirthDate { get; set; }

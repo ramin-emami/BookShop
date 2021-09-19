@@ -11,7 +11,7 @@ namespace BookShop.Areas.Identity.Data
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         public string Image { get; set; }
         public DateTime RegisterDate { get; set; }
         public DateTime? LastVisitDateTime { get; set; }
