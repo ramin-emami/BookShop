@@ -94,7 +94,7 @@ namespace BookShop.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 ConvertDate convert = new ConvertDate();
-                var user = new ApplicationUser { UserName = Input.UserName, Email = Input.Email,FirstName=Input.Name,LastName=Input.Family,PhoneNumber=Input.PhoneNumber,BirthDate=convert.ConvertShamsiToMiladi(Input.BirthDate),IsActive=true,RegisterDate=DateTime.Now};
+                var user = new ApplicationUser { UserName = Input.UserName, Email = Input.Email,FirstName=Input.Name,LastName=Input.Family,PhoneNumber=Input.PhoneNumber,BirthDate=convert.ConvertShamsiToMiladi(Input.BirthDate),IsActive=true,RegisterDate=DateTime.Now,EmailConfirmed=true};
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

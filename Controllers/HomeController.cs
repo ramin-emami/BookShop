@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BookShop.Models;
+using System.Security.Claims;
 
 namespace BookShop.Controllers
 {
@@ -12,6 +13,10 @@ namespace BookShop.Controllers
     {
         public IActionResult Index(string id)
         {
+            //var UserInfo = User;
+            //string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //string Role = User.FindFirstValue(ClaimTypes.Role);
+
             if (id != null)
                 ViewBag.ConfirmEmailAlert = "لینک فعال سازی حساب کاربری به ایمیل شما ارسال شد لطفا با کلیک روی این لینک حساب خود را فعال کنید.";
             return View();

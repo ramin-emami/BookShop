@@ -118,6 +118,7 @@ namespace BookShop.Areas.Identity.Data
         Task<List<ApplicationUser>> GetAllUsersAsync();
         Task<List<UsersViewModel>> GetAllUsersWithRolesAsync();
         Task<UsersViewModel> FindUserWithRolesByIdAsync(string UserID);
+        Task<string> GetFullName(ClaimsPrincipal User);
         #endregion
     }
 }

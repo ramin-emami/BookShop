@@ -5,21 +5,31 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+    <form asp-action="SignOut" asp-controller="Account" method="post" id="logoutForm" class="navbar-right">
+        <ul class="navbar-nav mt-2 mt-lg-0">
+            <li class="nav-item">
+                <a title="Manage" class="nav-link text-white">سلام  @UserManager.GetUserName(User)!</a>
             </li>
             <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
+                <button type="submit" class="btn btn-link navbar-btn navbar-link nav-link text-white">خروج</button>
+            </li>
+            <li>
+                @if (User.IsInRole("کاربر") || User.IsInRole("مشتری"))
+                {
+                    <a class="nav-link text-white">ورود به پنل کاربری</a>
+                }
+                else
+                {
+                    <a href="/Admin/Dashboard/Index" class="nav-link text-white">ورود به پنل مدیریت</a>
+                }
             </li>
         </ul>
     </form>
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>
-        <li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+    <ul class="navbar-nav mt-2 mt-lg-0">
+        <li class="nav-item"><a asp-action="Register" asp-controller="Account" class="nav-link text-white">عضویت</a></li>
+        <li class="nav-item"><a asp-action="SignIn" asp-controller="Account" class="nav-link text-white">ورود به سایت</a></li>
     </ul>
 }

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BookShop.Areas.Identity.Data
@@ -21,6 +22,7 @@ namespace BookShop.Areas.Identity.Data
         private readonly IServiceProvider _services;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IEnumerable<IUserValidator<ApplicationUser>> _userValidators;
+
         public ApplicationUserManager(
             ApplicationIdentityErrorDescriber errors,
             ILookupNormalizer keyNormalizer,
@@ -93,6 +95,12 @@ namespace BookShop.Areas.Identity.Data
                 TwoFactorEnabled = user.TwoFactorEnabled,
 
             }).FirstOrDefaultAsync();
+        }
+
+        public async Task<string> GetFullName(ClaimsPrincipal User)
+        {
+            var UserInfo = await GetUserAsync(User);
+            return UserInfo.FirstName + " " + UserInfo.LastName;
         }
     }
 }
