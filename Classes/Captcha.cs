@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace BookShop.Classes
 {
     public class Captcha
@@ -30,11 +29,11 @@ namespace BookShop.Classes
 
             return sb.ToString();
         }
-        
+
         public static bool ValidateCaptchaCode(string userInputCaptcha, HttpContext context)
         {
             var isValid = userInputCaptcha == context.Session.GetString("CaptchaCode");
-           // context.Session.Remove("CaptchaCode");
+            context.Session.Remove("CaptchaCode");
             return isValid;
         }
 

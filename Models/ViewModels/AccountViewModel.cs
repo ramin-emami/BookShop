@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookShop.Models.ViewModels
 {
-    public class RegisterViewModel
+    public class RegisterViewModel : GoogleRecaptchaModelBase
     {
         [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         [EmailAddress(ErrorMessage = "ایمیل شما نامعتبر است.")]
