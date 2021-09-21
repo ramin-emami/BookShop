@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -746,6 +747,7 @@
 		<PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
 		<PackageReference Include="ReflectionIT.Mvc.Paging" Version="3.3.0" />
+		<PackageReference Include="System.Drawing.Common" Version="4.5.1" />
 	</ItemGroup>
 
 	<ItemGroup>
