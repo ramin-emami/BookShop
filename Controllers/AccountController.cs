@@ -106,6 +106,11 @@ namespace BookShop.Controllers
                     {
                         return RedirectToAction("Index", "Home");
                     }
+                    if(result.IsLockedOut)
+                    {
+                        ModelState.AddModelError(string.Empty, "حساب کاربری شما به مدت 20 دقیقه به دلیل تلاش های ناموفق قفل شد.");
+                        return View();
+                    }
 
                     ModelState.AddModelError(string.Empty, "نام کاربری یا کلمه عبور شما صحیح نمی باشد.");
                 }
@@ -152,24 +157,24 @@ namespace BookShop.Controllers
             if(ModelState.IsValid)
             {
                 var User = await _userManager.FindByEmailAsync(ViewModel.Email);
-                if (User == null)
-                    ModelState.AddModelError(string.Empty, "ایمیل شما صحیح نمی باشد.");
-                else
+                if(User==null)
                 {
-                    if (!await _userManager.IsEmailConfirmedAsync(User))
-                        ModelState.AddModelError(string.Empty, "لطفا با تایید ایمیل حساب کاربری خود را فعال کنید.");
-                    else
-                    {
-                        var Code = await _userManager.GeneratePasswordResetTokenAsync(User);
-                        var CallbackUrl = Url.Action("ResetPassword", "Account", values: new { Code },protocol:Request.Scheme);
-                        await _emailSender.SendEmailAsync(ViewModel.Email, "بازیابی کلمه عبور", $"<p style='font-family:tahoma;font-size:14px'> برای بازنشانی کلمه عبور خود <a href='{HtmlEncoder.Default.Encode(CallbackUrl)}'>اینجا کلیک کنید</a> </p>");
-
-                        return RedirectToAction("ForgetPasswordConfirmation");
-                    }
+                    ModelState.AddModelError(string.Empty, "ایمیل شما صحیح نمی باشد.");
                 }
+
+                if(!await _userManager.IsEmailConfirmedAsync(User))
+                {
+                    ModelState.AddModelError(string.Empty, "لطفا با تایید ایمیل حساب کاربری خود را فعال کنید.");
+                }
+
+                var Code = await _userManager.GeneratePasswordResetTokenAsync(User);
+                var CallbackUrl = Url.Action("ResetPassword", "Account", values: new { Code }, protocol: Request.Scheme);
+                await _emailSender.SendEmailAsync(ViewModel.Email, "بازیابی کلمه عبور", $"<p style='font-family:tahoma;font-size:14px'>برای بازنشانی کلمه عبور خود <a href='{HtmlEncoder.Default.Encode(CallbackUrl)}'>اینجا کلیک کنید</a></p>");
+
+                return RedirectToAction("ForgetPasswordConfirmation");
             }
 
-            return View(ViewModel);
+            return View();
         }
 
         [HttpGet]
@@ -179,7 +184,7 @@ namespace BookShop.Controllers
         }
 
         [HttpGet]
-        public IActionResult ResetPassword(string Code = null)
+        public IActionResult ResetPassword(string Code=null)
         {
             if (Code == null)
                 return NotFound();
@@ -194,26 +199,31 @@ namespace BookShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel ViewModel)
         {
-            if(ModelState.IsValid)
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
+            else
             {
                 var User = await _userManager.FindByEmailAsync(ViewModel.Email);
-                if (User == null)
-                    ModelState.AddModelError(string.Empty, "ایمیل شما صحیح نمی باشد.");
-
-                else
+                if(User==null)
                 {
-                    var Result = await _userManager.ResetPasswordAsync(User, ViewModel.Code, ViewModel.Password);
-                    if (Result.Succeeded)
-                        return RedirectToAction("ResetPasswordConfirmation");
-                    else
-                    {
-                        foreach (var error in Result.Errors)
-                            ModelState.AddModelError(string.Empty, error.Description);
-                    }
+                    ModelState.AddModelError(string.Empty, "ایمیل شما صحیح نمی باشد.");
+                    return View();
                 }
-            }
+                var Result = await _userManager.ResetPasswordAsync(User, ViewModel.Code, ViewModel.Password);
+                if(Result.Succeeded)
+                {
+                    return RedirectToAction("ResetPasswordConfirmation");
+                }
 
-            return View(ViewModel);
+                foreach(var error in Result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                return View();
+            }
         }
 
         [HttpGet]

@@ -43,6 +43,9 @@ namespace BookShop.Areas.Identity
                     options.User.RequireUniqueEmail = true;
 
                     options.SignIn.RequireConfirmedEmail = true;
+
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(20);
+                    options.Lockout.MaxFailedAccessAttempts = 3;
                 });
             });
         }

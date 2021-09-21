@@ -61,7 +61,11 @@
     <None Include="Areas\Identity\Pages\_ViewImports.cshtml" />
     <None Include="Areas\Identity\Pages\_ViewStart.cshtml" />
     <None Include="Views\Account\ConfirmEmail.cshtml" />
+    <None Include="Views\Account\ForgetPassword.cshtml" />
+    <None Include="Views\Account\ForgetPasswordConfirmation.cshtml" />
     <None Include="Views\Account\Register.cshtml" />
+    <None Include="Views\Account\ResetPassword.cshtml" />
+    <None Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <None Include="Views\Account\SignIn.cshtml" />
     <None Include="Views\Home\About.cshtml" />
     <None Include="Views\Home\Contact.cshtml" />
