@@ -61,6 +61,7 @@
     <None Include="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
     <None Include="Areas\Identity\Pages\_ViewImports.cshtml" />
     <None Include="Areas\Identity\Pages\_ViewStart.cshtml" />
+    <None Include="Views\Account\ChangePassword.cshtml" />
     <None Include="Views\Account\ConfirmEmail.cshtml" />
     <None Include="Views\Account\ForgetPassword.cshtml" />
     <None Include="Views\Account\ForgetPasswordConfirmation.cshtml" />
@@ -81,6 +82,7 @@
     <None Include="Views\Shared\_CookieConsentPartial.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
     <None Include="Views\Shared\_LoginPartial.cshtml" />
+    <None Include="Views\Shared\_UserSidebar.cshtml" />
     <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
     <None Include="Views\_ViewImports.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
