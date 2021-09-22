@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using BookShop.Areas.Identity.Data;
+﻿using BookShop.Areas.Identity.Data;
 using BookShop.Areas.Identity.Services;
 using BookShop.Classes;
 using BookShop.Models.ViewModels;
@@ -13,6 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.IO;
+using System.Linq;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace BookShop.Controllers
 {
@@ -80,7 +79,7 @@ namespace BookShop.Controllers
             if (userId == null || code == null)
                 return RedirectToAction("Index", "Home");
 
-            var user =await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
                 return NotFound($"Unable to load user with ID '{userId}'");
 
@@ -101,14 +100,14 @@ namespace BookShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignIn(SignInViewModel ViewModel)
         {
-            if(Captcha.ValidateCaptchaCode(ViewModel.CaptchaCode,HttpContext))
+            if (Captcha.ValidateCaptchaCode(ViewModel.CaptchaCode, HttpContext))
             {
                 if (ModelState.IsValid)
                 {
                     var User = await _userManager.FindByNameAsync(ViewModel.UserName);
-                    if(User!=null)
+                    if (User != null)
                     {
-                        if(User.IsActive)
+                        if (User.IsActive)
                         {
                             var result = await _signInManager.PasswordSignInAsync(ViewModel.UserName, ViewModel.Password, ViewModel.RememberMe, true);
                             if (result.Succeeded)
@@ -141,6 +140,10 @@ namespace BookShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignOut()
         {
+            var user = await _userManager.GetUserAsync(User);
+            user.LastVisitDateTime = DateTime.Now;
+            await _userManager.UpdateAsync(user);
+
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
@@ -167,15 +170,15 @@ namespace BookShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgetPassword(ForgetPasswordViewModel ViewModel)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var User = await _userManager.FindByEmailAsync(ViewModel.Email);
-                if(User==null)
+                if (User == null)
                 {
                     ModelState.AddModelError(string.Empty, "ایمیل شما صحیح نمی باشد.");
                 }
 
-                if(!await _userManager.IsEmailConfirmedAsync(User))
+                if (!await _userManager.IsEmailConfirmedAsync(User))
                 {
                     ModelState.AddModelError(string.Empty, "لطفا با تایید ایمیل حساب کاربری خود را فعال کنید.");
                 }
@@ -197,7 +200,7 @@ namespace BookShop.Controllers
         }
 
         [HttpGet]
-        public IActionResult ResetPassword(string Code=null)
+        public IActionResult ResetPassword(string Code = null)
         {
             if (Code == null)
                 return NotFound();
@@ -212,25 +215,25 @@ namespace BookShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel ViewModel)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View();
             }
             else
             {
                 var User = await _userManager.FindByEmailAsync(ViewModel.Email);
-                if(User==null)
+                if (User == null)
                 {
                     ModelState.AddModelError(string.Empty, "ایمیل شما صحیح نمی باشد.");
                     return View();
                 }
                 var Result = await _userManager.ResetPasswordAsync(User, ViewModel.Code, ViewModel.Password);
-                if(Result.Succeeded)
+                if (Result.Succeeded)
                 {
                     return RedirectToAction("ResetPasswordConfirmation");
                 }
 
-                foreach(var error in Result.Errors)
+                foreach (var error in Result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
@@ -266,7 +269,7 @@ namespace BookShop.Controllers
 
             var UserFactors = await _userManager.GetValidTwoFactorProvidersAsync(User);
             UserFactors.Remove("Authenticator");
-            var FactorOptions = UserFactors.Select(p => new SelectListItem { Text =(p=="Email"?"ارسال ایمیل":"ارسال پیامک"), Value = p }).ToList();
+            var FactorOptions = UserFactors.Select(p => new SelectListItem { Text = (p == "Email" ? "ارسال ایمیل" : "ارسال پیامک"), Value = p }).ToList();
 
             return View(new SendCodeViewModel { Providers = FactorOptions, RememberMe = RememberMe });
         }
@@ -275,7 +278,7 @@ namespace BookShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendCode(SendCodeViewModel ViewModel)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(ViewModel);
             }
@@ -288,7 +291,7 @@ namespace BookShop.Controllers
             if (string.IsNullOrWhiteSpace(Code))
                 return View("Error");
 
-            var Message = "<p style='direction:rtl;font-size:14px;font-family:tahoma'>کد اعتبارسنجی شما :"+Code+"</p>";
+            var Message = "<p style='direction:rtl;font-size:14px;font-family:tahoma'>کد اعتبارسنجی شما :" + Code + "</p>";
 
             if (ViewModel.SelectedProvider == "Email")
                 await _emailSender.SendEmailAsync(User.Email, "کد اعتبارسنجی", Message);
@@ -301,15 +304,15 @@ namespace BookShop.Controllers
                     ModelState.AddModelError(string.Empty, "در ارسال پیامک خطایی رخ داده است.");
                     return View(ViewModel);
                 }
-                    
+
             }
 
             return RedirectToAction("VerifyCode", new { Provider = ViewModel.SelectedProvider, RememberMe = ViewModel.RememberMe });
-               
+
         }
 
         [HttpGet]
-        public async Task<IActionResult> VerifyCode(string Provider,bool RememberMe)
+        public async Task<IActionResult> VerifyCode(string Provider, bool RememberMe)
         {
             var User = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (User == null)
@@ -321,18 +324,18 @@ namespace BookShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VerifyCode(VerifyCodeViewModel ViewModel)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(ViewModel);
             }
 
             var Result = await _signInManager.TwoFactorSignInAsync(ViewModel.Provider, ViewModel.Code, ViewModel.RememberMe, ViewModel.RememberBrowser);
-            if(Result.Succeeded)
+            if (Result.Succeeded)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            else if(Result.IsLockedOut)
+            else if (Result.IsLockedOut)
             {
                 ModelState.AddModelError(string.Empty, "حساب کاربری شما به دلیل تلاش های ناموفق به مدت 20 دقیقه قفل شد.");
             }
@@ -344,6 +347,59 @@ namespace BookShop.Controllers
 
             return View(ViewModel);
 
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChangePassword()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
+
+            UserSidebarViewModel Sidebar = new UserSidebarViewModel()
+            {
+                FullName = user.FirstName + " " + user.LastName,
+                LastVisit = user.LastVisitDateTime,
+                RegisterDate = user.RegisterDate,
+                Image = user.Image,
+            };
+
+            return View(new ChangePasswordViewModel {UserSidebar= Sidebar });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel ViewModel)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                var ChangePassResult = await _userManager.ChangePasswordAsync(user, ViewModel.OldPassword, ViewModel.NewPassword);
+                if (ChangePassResult.Succeeded)
+                    ViewBag.Alert = "کلمه عبور شما با موفقیت تغییر یافت.";
+
+                else
+                {
+                    foreach(var item in ChangePassResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, item.Description);
+                    }
+                }
+            }
+
+            UserSidebarViewModel Sidebar = new UserSidebarViewModel()
+            {
+                FullName = user.FirstName + " " + user.LastName,
+                LastVisit = user.LastVisitDateTime,
+                RegisterDate = user.RegisterDate,
+                Image = user.Image,
+            };
+
+            ViewModel.UserSidebar = Sidebar;
+            return View(ViewModel);
         }
 
     }

@@ -67,8 +67,10 @@
     <None Include="Views\Account\Register.cshtml" />
     <None Include="Views\Account\ResetPassword.cshtml" />
     <None Include="Views\Account\ResetPasswordConfirmation.cshtml" />
+    <None Include="Views\Account\SendCode.cshtml" />
     <None Include="Views\Account\SendSms.cshtml" />
     <None Include="Views\Account\SignIn.cshtml" />
+    <None Include="Views\Account\VerifyCode.cshtml" />
     <None Include="Views\Home\About.cshtml" />
     <None Include="Views\Home\Contact.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
