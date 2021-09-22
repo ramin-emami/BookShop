@@ -84,4 +84,31 @@ namespace BookShop.Models.ViewModels
         public string Code { get; set; }
     }
 
+
+    public class SendCodeViewModel
+    {
+        public string SelectedProvider { get; set; }
+
+        public ICollection<SelectListItem> Providers { get; set; }
+
+        public bool RememberMe { get; set; }
+    }
+
+    public class VerifyCodeViewModel
+    {
+        [Required]
+        public string Provider { get; set; }
+
+        [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
+        [Display(Name = "کد اعتبارسنجی")]
+        public string Code { get; set; }
+
+        [Display(Name = "مرا به خاطر بسپار؟")]
+        public bool RememberBrowser { get; set; }
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
+    }
+
+
 }

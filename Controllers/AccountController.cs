@@ -257,5 +257,94 @@ namespace BookShop.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> SendCode(bool RememberMe)
+        {
+            var User = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (User == null)
+                return NotFound();
+
+            var UserFactors = await _userManager.GetValidTwoFactorProvidersAsync(User);
+            UserFactors.Remove("Authenticator");
+            var FactorOptions = UserFactors.Select(p => new SelectListItem { Text =(p=="Email"?"ارسال ایمیل":"ارسال پیامک"), Value = p }).ToList();
+
+            return View(new SendCodeViewModel { Providers = FactorOptions, RememberMe = RememberMe });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendCode(SendCodeViewModel ViewModel)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(ViewModel);
+            }
+
+            var User = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (User == null)
+                return NotFound();
+
+            var Code = await _userManager.GenerateTwoFactorTokenAsync(User, ViewModel.SelectedProvider);
+            if (string.IsNullOrWhiteSpace(Code))
+                return View("Error");
+
+            var Message = "<p style='direction:rtl;font-size:14px;font-family:tahoma'>کد اعتبارسنجی شما :"+Code+"</p>";
+
+            if (ViewModel.SelectedProvider == "Email")
+                await _emailSender.SendEmailAsync(User.Email, "کد اعتبارسنجی", Message);
+
+            else if (ViewModel.SelectedProvider == "Phone")
+            {
+                string ResponseSms = await _smsSender.SendAuthSmsAsync(Code, User.PhoneNumber);
+                if (ResponseSms == "Failed")
+                {
+                    ModelState.AddModelError(string.Empty, "در ارسال پیامک خطایی رخ داده است.");
+                    return View(ViewModel);
+                }
+                    
+            }
+
+            return RedirectToAction("VerifyCode", new { Provider = ViewModel.SelectedProvider, RememberMe = ViewModel.RememberMe });
+               
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> VerifyCode(string Provider,bool RememberMe)
+        {
+            var User = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (User == null)
+                return NotFound();
+            return View(new VerifyCodeViewModel { Provider = Provider, RememberMe = RememberMe });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> VerifyCode(VerifyCodeViewModel ViewModel)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(ViewModel);
+            }
+
+            var Result = await _signInManager.TwoFactorSignInAsync(ViewModel.Provider, ViewModel.Code, ViewModel.RememberMe, ViewModel.RememberBrowser);
+            if(Result.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            else if(Result.IsLockedOut)
+            {
+                ModelState.AddModelError(string.Empty, "حساب کاربری شما به دلیل تلاش های ناموفق به مدت 20 دقیقه قفل شد.");
+            }
+
+            else
+            {
+                ModelState.AddModelError(string.Empty, "کد اعتبارسنجی صحیح نمی باشد");
+            }
+
+            return View(ViewModel);
+
+        }
+
     }
 }
