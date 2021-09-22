@@ -53,6 +53,8 @@ namespace BookShop
             services.AddScoped<IApplicationUserManager, ApplicationUserManager>();
             services.AddScoped<ApplicationIdentityErrorDescriber>();
             services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<ISmsSender, SmsSender>();
+
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
             services.AddMvc(options =>
             {

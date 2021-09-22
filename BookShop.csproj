@@ -51,6 +51,7 @@
     <None Include="Areas\Admin\Views\UsersManager\Details.cshtml" />
     <None Include="Areas\Admin\Views\UsersManager\Edit.cshtml" />
     <None Include="Areas\Admin\Views\UsersManager\Index.cshtml" />
+    <None Include="Areas\Admin\Views\UsersManager\ResetPassword.cshtml" />
     <None Include="Areas\Admin\Views\_ViewImports.cshtml" />
     <None Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <None Include="Areas\Identity\Pages\Account\Manage\Index.cshtml" />
@@ -731,7 +732,6 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Identity\Services\" />
   </ItemGroup>
 
 	<ItemGroup>
