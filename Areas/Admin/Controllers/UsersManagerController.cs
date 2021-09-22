@@ -275,5 +275,87 @@ namespace BookShop.Areas.Admin.Controllers
             return View(ViewModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeTwoFactorEnabled(string UserId)
+        {
+            var User = await _userManager.FindByIdAsync(UserId);
+            if (User == null)
+            {
+                return NotFound();
+            }
+
+            if (User.TwoFactorEnabled)
+                User.TwoFactorEnabled = false;
+            else
+                User.TwoFactorEnabled = true;
+
+            var Result = await _userManager.UpdateAsync(User);
+            if(!Result.Succeeded)
+            {
+                foreach(var error in Result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return RedirectToAction("Details", new { id = UserId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeEmailConfirmed(string UserId)
+        {
+            var User = await _userManager.FindByIdAsync(UserId);
+            if (User == null)
+            {
+                return NotFound();
+            }
+
+            if (User.EmailConfirmed)
+                User.EmailConfirmed = false;
+            else
+                User.EmailConfirmed = true;
+
+            var Result = await _userManager.UpdateAsync(User);
+            if (!Result.Succeeded)
+            {
+                foreach (var error in Result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return RedirectToAction("Details", new { id = UserId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePhoneNumberConfirmed(string UserId)
+        {
+            var User = await _userManager.FindByIdAsync(UserId);
+            if (User == null)
+            {
+                return NotFound();
+            }
+
+            if (User.PhoneNumberConfirmed)
+                User.PhoneNumberConfirmed = false;
+            else
+                User.PhoneNumberConfirmed = true;
+
+            var Result = await _userManager.UpdateAsync(User);
+            if (!Result.Succeeded)
+            {
+                foreach (var error in Result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return RedirectToAction("Details", new { id = UserId });
+
+        }
+
     }
 }

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookShop.Controllers
 {
@@ -119,6 +120,9 @@ namespace BookShop.Controllers
                                 ModelState.AddModelError(string.Empty, "حساب کاربری شما به مدت 20 دقیقه به دلیل تلاش های ناموفق قفل شد.");
                                 return View();
                             }
+
+                            if (result.RequiresTwoFactor)
+                                return RedirectToAction("SendCode", new { RememberMe = ViewModel.RememberMe });
                         }
                     }
                     ModelState.AddModelError(string.Empty, "نام کاربری یا کلمه عبور شما صحیح نمی باشد.");
@@ -244,7 +248,7 @@ namespace BookShop.Controllers
 
         public async Task<IActionResult> SendSms()
         {
-            string Status = await _smsSender.SendAuthSmsAsync("5678", "09360000000");
+            string Status = await _smsSender.SendAuthSmsAsync("5678", "09368166860");
             if (Status == "Success")
                 ViewBag.Alert = "ارسال پیامک با موفقیت انجام شد.";
             else

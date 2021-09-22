@@ -60,6 +60,7 @@
 
                             <!-- Tab panes -->
                             <div class="tab-content">
+                                <div asp-validation-summary="ModelOnly"></div>
                                 <div role="tabpanel" class="tab-pane fade show active" id="profile">
                                     <div class="row">
                                         <div class="col-md-3">
@@ -184,7 +185,14 @@
                                                             @(Model.EmailConfirmed==true?"تایید شده":"تایید نشده")
                                                         </label>
                                                     </td>
-                                                    <td></td>
+                                                    <td>
+                                                        <form asp-action="ChangeEmailConfirmed">
+                                                            <input type="hidden" value="@Model.Id" name="UserId" />
+                                                            <button type="submit" class="btn btn-sm @(Model.EmailConfirmed==true?"btn-danger":"btn-success")">
+                                                                @(Model.EmailConfirmed == true ? "عدم تایید" : "تایید")
+                                                            </button>
+                                                        </form>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -195,7 +203,14 @@
                                                             @(Model.PhoneNumberConfirmed == true ? "تایید شده" : "تایید نشده")
                                                         </label>
                                                     </td>
-                                                    <td></td>
+                                                    <td>
+                                                        <form asp-action="ChangePhoneNumberConfirmed">
+                                                            <input type="hidden" value="@Model.Id" name="UserId" />
+                                                            <button type="submit" class="btn btn-sm @(Model.PhoneNumberConfirmed==true?"btn-danger":"btn-success")">
+                                                                @(Model.PhoneNumberConfirmed == true ? "عدم تایید" : "تایید")
+                                                            </button>
+                                                        </form>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -218,7 +233,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        اعتبارسنجی دو مرحله ای
+                                                        احراز هویت دو مرحله ای
                                                     </td>
                                                     <td>
                                                         <label class="badge @(Model.TwoFactorEnabled==true?"badge-success":"badge-danger")">
@@ -226,7 +241,12 @@
                                                         </label>
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-success btn-sm">فعال شود</button>
+                                                        <form asp-action="ChangeTwoFactorEnabled">
+                                                            <input type="hidden" value="@Model.Id" name="UserId" />
+                                                            <button type="submit" class="btn btn-sm @(Model.TwoFactorEnabled==true?"btn-danger":"btn-success")">
+                                                                @(Model.TwoFactorEnabled == true ? "غیرفعال شود" : "فعال شود")
+                                                            </button>
+                                                        </form>
                                                     </td>
                                                 </tr>
                                                 <tr>
