@@ -101,17 +101,23 @@ namespace BookShop.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _signInManager.PasswordSignInAsync(ViewModel.UserName, ViewModel.Password, ViewModel.RememberMe, true);
-                    if (result.Succeeded)
+                    var User = await _userManager.FindByNameAsync(ViewModel.UserName);
+                    if(User!=null)
                     {
-                        return RedirectToAction("Index", "Home");
+                        if(User.IsActive)
+                        {
+                            var result = await _signInManager.PasswordSignInAsync(ViewModel.UserName, ViewModel.Password, ViewModel.RememberMe, true);
+                            if (result.Succeeded)
+                            {
+                                return RedirectToAction("Index", "Home");
+                            }
+                            if (result.IsLockedOut)
+                            {
+                                ModelState.AddModelError(string.Empty, "حساب کاربری شما به مدت 20 دقیقه به دلیل تلاش های ناموفق قفل شد.");
+                                return View();
+                            }
+                        }
                     }
-                    if(result.IsLockedOut)
-                    {
-                        ModelState.AddModelError(string.Empty, "حساب کاربری شما به مدت 20 دقیقه به دلیل تلاش های ناموفق قفل شد.");
-                        return View();
-                    }
-
                     ModelState.AddModelError(string.Empty, "نام کاربری یا کلمه عبور شما صحیح نمی باشد.");
                 }
             }

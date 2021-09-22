@@ -218,6 +218,62 @@ namespace BookShop.Areas.Admin.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> InActiveOrActiveUser(string UserId,bool Status)
+        {
+            var User = await _userManager.FindByIdAsync(UserId);
+            if (User == null)
+            {
+                return NotFound();
+            }
+
+            User.IsActive = Status;
+            await _userManager.UpdateAsync(User);
+            return RedirectToAction("Details", new { id = UserId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword(string UserId)
+        {
+            var User = await _userManager.FindByIdAsync(UserId);
+            if (User == null)
+            {
+                return NotFound();
+            }
+
+            var ViewModel = new UserResetPasswordViewModel
+            {
+                Id = UserId,
+                UserName = User.UserName,
+                Email = User.Email,
+            };
+
+            return View(ViewModel);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(UserResetPasswordViewModel ViewModel)
+        {
+            if(ModelState.IsValid)
+            {
+                var User = await _userManager.FindByIdAsync(ViewModel.Id);
+                if (User == null)
+                {
+                    return NotFound();
+                }
+
+                await _userManager.RemovePasswordAsync(User);
+                await _userManager.AddPasswordAsync(User, ViewModel.NewPassword);
+                ViewBag.AlertSuccess = "بازنشانی کلمه عبور با موفقیت انجام شد.";
+                ViewModel.UserName = User.UserName;
+                ViewModel.Email = User.Email;
+            }
+
+            return View(ViewModel);
+        }
 
     }
 }
