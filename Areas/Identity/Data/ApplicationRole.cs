@@ -26,5 +26,6 @@ namespace BookShop.Areas.Identity.Data
         public string Description { get; set; }
 
         public virtual List<ApplicationUserRole> Users { get; set; }
+        public virtual List<ApplicationRoleClaim> Claims { get; set; }
     }
 }

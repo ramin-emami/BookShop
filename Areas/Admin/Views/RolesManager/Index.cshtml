@@ -29,6 +29,9 @@
                             <th class="text-center">
                                 @Html.SortableHeaderFor(model => model.UsersCount)
                             </th>
+                            <th>
+                                مدیریت سطح دسترسی های پویای نقش
+                            </th>
                             <th class="text-center">عملیات</th>
                         </tr>
                     </thead>
@@ -51,6 +54,11 @@
                                     <span class="p-1">
                                         کاربران
                                     </span>
+                                </a>
+                            </td>
+                            <td class="text-center">
+                                <a href="/Admin/DynamicAccess/Index/@item.RoleID" class="btn btn-primary">
+                                    مشاهده و تغییر لیست دسترسی های پویا
                                 </a>
                             </td>
                             <td class="text-center">

@@ -85,6 +85,7 @@
     <None Include="Views\Home\Contact.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Home\Privacy.cshtml" />
+    <None Include="Views\Products\BannedBooks.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <None Include="Views\Shared\_Admin.cshtml" />
     <None Include="Views\Shared\_AdminLoginPartial.cshtml" />
@@ -745,7 +746,6 @@
   </ItemGroup>-->
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
   </ItemGroup>
 

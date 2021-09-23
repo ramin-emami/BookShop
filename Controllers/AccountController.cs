@@ -191,23 +191,23 @@ namespace BookShop.Controllers
             {
                 var User = await _userManager.FindByEmailAsync(ViewModel.Email);
                 if (User == null)
-                {
                     ModelState.AddModelError(string.Empty, "ایمیل شما صحیح نمی باشد.");
-                }
-
-                if (!await _userManager.IsEmailConfirmedAsync(User))
+                else
                 {
-                    ModelState.AddModelError(string.Empty, "لطفا با تایید ایمیل حساب کاربری خود را فعال کنید.");
+                    if (!await _userManager.IsEmailConfirmedAsync(User))
+                        ModelState.AddModelError(string.Empty, "لطفا با تایید ایمیل حساب کاربری خود را فعال کنید.");
+                    else
+                    {
+                        var Code = await _userManager.GeneratePasswordResetTokenAsync(User);
+                        var CallbackUrl = Url.Action("ResetPassword", "Account", values: new { Code }, protocol: Request.Scheme);
+                        await _emailSender.SendEmailAsync(ViewModel.Email, "بازیابی کلمه عبور", $"<p style='font-family:tahoma;font-size:14px'> برای بازنشانی کلمه عبور خود <a href='{HtmlEncoder.Default.Encode(CallbackUrl)}'>اینجا کلیک کنید</a> </p>");
+
+                        return RedirectToAction("ForgetPasswordConfirmation");
+                    }
                 }
-
-                var Code = await _userManager.GeneratePasswordResetTokenAsync(User);
-                var CallbackUrl = Url.Action("ResetPassword", "Account", values: new { Code }, protocol: Request.Scheme);
-                await _emailSender.SendEmailAsync(ViewModel.Email, "بازیابی کلمه عبور", $"<p style='font-family:tahoma;font-size:14px'>برای بازنشانی کلمه عبور خود <a href='{HtmlEncoder.Default.Encode(CallbackUrl)}'>اینجا کلیک کنید</a></p>");
-
-                return RedirectToAction("ForgetPasswordConfirmation");
             }
 
-            return View();
+            return View(ViewModel);
         }
 
         [HttpGet]
@@ -232,31 +232,26 @@ namespace BookShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel ViewModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-            else
+            if (ModelState.IsValid)
             {
                 var User = await _userManager.FindByEmailAsync(ViewModel.Email);
                 if (User == null)
-                {
                     ModelState.AddModelError(string.Empty, "ایمیل شما صحیح نمی باشد.");
-                    return View();
-                }
-                var Result = await _userManager.ResetPasswordAsync(User, ViewModel.Code, ViewModel.Password);
-                if (Result.Succeeded)
-                {
-                    return RedirectToAction("ResetPasswordConfirmation");
-                }
 
-                foreach (var error in Result.Errors)
+                else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    var Result = await _userManager.ResetPasswordAsync(User, ViewModel.Code, ViewModel.Password);
+                    if (Result.Succeeded)
+                        return RedirectToAction("ResetPasswordConfirmation");
+                    else
+                    {
+                        foreach (var error in Result.Errors)
+                            ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
-
-                return View();
             }
+
+            return View(ViewModel);
         }
 
         [HttpGet]

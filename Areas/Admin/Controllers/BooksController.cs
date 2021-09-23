@@ -1,4 +1,5 @@
-﻿using BookShop.Models;
+﻿using BookShop.Areas.Admin.Data;
+using BookShop.Models;
 using BookShop.Models.Repository;
 using BookShop.Models.UnitOfWork;
 using BookShop.Models.ViewModels;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +19,8 @@ using System.Threading.Tasks;
 namespace BookShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    //[Authorize]
+    [DisplayName("مدیریت کتاب ها")]
     public class BooksController : Controller
     {
         private readonly IUnitOfWork _UW;
@@ -26,6 +29,8 @@ namespace BookShop.Areas.Admin.Controllers
             _UW = UW;
         }
 
+        [Authorize(Policy =ConstantPolicies.DynamicPermission)]
+        [DisplayName("مشاهده کتاب ها")]
         public IActionResult Index(int page = 1, int row = 10, string sortExpression = "Title", string title = "")
         {
             title = String.IsNullOrEmpty(title) ? "" : title;
@@ -68,6 +73,8 @@ namespace BookShop.Areas.Admin.Controllers
             return View(Books);
         }
 
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
+        [DisplayName("افزودن کتاب جدید")]
         public IActionResult Create()
         {
             ViewBag.LanguageID = new SelectList(_UW.BaseRepository<Language>().FindAll(), "LanguageID", "LanguageName");
@@ -134,6 +141,8 @@ namespace BookShop.Areas.Admin.Controllers
             }
         }
 
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
+        [DisplayName("مشاهده جزئیات کتاب")]
         public IActionResult Details(int id)
         {
             var BookInfo = _UW._Context.Query<ReadAllBook>().Where(b => b.BookID == id).First();
@@ -141,6 +150,8 @@ namespace BookShop.Areas.Admin.Controllers
             return View(BookInfo);
         }
 
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
+        [DisplayName("حذف کتاب")]
         public async Task<IActionResult> Delete(int id)
         {
             var Book =await _UW.BaseRepository<Book>().FindByIDAsync(id);
@@ -159,6 +170,8 @@ namespace BookShop.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
+        [DisplayName("ویرایش اطلاعات کتاب")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

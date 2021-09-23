@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookShop.Models
 {
-    public class IdentityDBContext : IdentityDbContext<ApplicationUser,ApplicationRole,string,IdentityUserClaim<string>,ApplicationUserRole,IdentityUserLogin<string>,IdentityRoleClaim<string>,IdentityUserToken<string>>
+    public class IdentityDBContext : IdentityDbContext<ApplicationUser,ApplicationRole,string,IdentityUserClaim<string>,ApplicationUserRole,IdentityUserLogin<string>,ApplicationRoleClaim,IdentityUserToken<string>>
     {
         public IdentityDBContext(DbContextOptions<IdentityDBContext> options)
             : base(options)
@@ -32,6 +32,12 @@ namespace BookShop.Models
             builder.Entity<ApplicationUserRole>()
                .HasOne(userRole => userRole.User)
                .WithMany(role => role.Roles).HasForeignKey(r => r.UserId);
+
+            builder.Entity<ApplicationRoleClaim>().ToTable("AppRoleClaim");
+
+            builder.Entity<ApplicationRoleClaim>()
+                .HasOne(roleclaim => roleclaim.Role)
+                .WithMany(claim => claim.Claims).HasForeignKey(c => c.RoleId);
         }
     }
 }
