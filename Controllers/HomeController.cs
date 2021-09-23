@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BookShop.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookShop.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         public IActionResult Index(string id)

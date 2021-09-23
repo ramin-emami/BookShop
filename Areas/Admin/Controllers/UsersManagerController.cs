@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BookShop.Areas.Identity.Data;
 using BookShop.Classes;
 using BookShop.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,7 @@ namespace BookShop.Areas.Admin.Controllers
             _converDate = convertDate;
             _emailSender = emailSender;
         }
+
 
         public async Task<IActionResult> Index(string Msg,int page=1,int row=10)
         {

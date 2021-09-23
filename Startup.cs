@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BookShop.Areas.Identity.Data;
 using BookShop.Areas.Identity.Services;
@@ -43,7 +44,7 @@ namespace BookShop
             //    options.MinimumSameSitePolicy = SameSiteMode.None;
             //});
 
-           
+
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ConvertDate>();
             services.AddTransient<IConvertDate, ConvertDate>();
@@ -54,6 +55,7 @@ namespace BookShop
             services.AddScoped<ApplicationIdentityErrorDescriber>();
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<ISmsSender, SmsSender>();
+            services.AddHttpClient();
 
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
             services.AddMvc(options =>
@@ -76,14 +78,19 @@ namespace BookShop
               {
                   options.ClientId = "315654760867-d01fsd0fb847vft0fbo6hvbgqghrt5ph.apps.googleusercontent.com";
                   options.ClientSecret = "F7rY4md1LciG24O_4J_RAPct";
-              });
+              })
+                .AddYahoo(options =>
+                {
+                    options.ClientId = "dj0yJmk9aWxnZVZNTGVwVXhWJnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWQz";
+                    options.ClientSecret = "9d68b57943e8035cd0771f49d2b54af10797eb4e";
+                });
 
             services.AddPaging(options =>
-            {
-                options.ViewName = "Bootstrap4";
-                options.HtmlIndicatorDown = "<i class='fa fa-sort-amount-down'></i>";
-                options.HtmlIndicatorUp = "<i class='fa fa-sort-amount-up'></i>";
-            });
+{
+    options.ViewName = "Bootstrap4";
+    options.HtmlIndicatorDown = "<i class='fa fa-sort-amount-down'></i>";
+    options.HtmlIndicatorUp = "<i class='fa fa-sort-amount-up'></i>";
+});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

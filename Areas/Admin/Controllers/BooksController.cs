@@ -2,6 +2,7 @@
 using BookShop.Models.Repository;
 using BookShop.Models.UnitOfWork;
 using BookShop.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 namespace BookShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class BooksController : Controller
     {
         private readonly IUnitOfWork _UW;

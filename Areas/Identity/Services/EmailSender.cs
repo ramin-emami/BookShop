@@ -17,7 +17,7 @@ namespace BookShop.Areas.Identity.Services
                 var Credential = new NetworkCredential
                 {
                     UserName="aspcorelearn",
-                    Password= "12345678",
+                    Password= "Arz1372Zoo",
                 };
 
                 Client.Credentials = Credential;

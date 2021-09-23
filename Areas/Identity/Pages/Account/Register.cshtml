@@ -4,6 +4,7 @@
     ViewData["Title"] = "Register";
 }
 
+
 <div class="card">
     <div class="card-header bg-light">
         عضویت کاربر جدید
@@ -32,7 +33,7 @@
                 <div class="col-md-9">
                     <div asp-validation-summary="All" class="text-danger">
 
-                     </div>
+                    </div>
                     <div class="row">
 
                         <div class="form-group col-md-6">
@@ -107,7 +108,7 @@
                                 </ul>
                             </div>
                         </div>
-                       
+
                     </div>
                 </div>
             </div>
@@ -117,9 +118,9 @@
         <div class="card-footer clearfix bg-light">
             <button type="submit" class="btn btn-primary float-left">عضویت</button>
         </div>
-      
-    </form>  
-   
+
+    </form>
+
 </div>
 
 
@@ -129,37 +130,36 @@
 
 <script>
     $("#BirthDate").MdPersianDateTimePicker({
-         targetTextSelector:"#InputBirthDate",
-         placement:'top',
+        targetTextSelector: "#InputBirthDate",
+        placement: 'top',
     });
 
-    $(document).ready(function()
-    {
-     //Persian character and numbers (and space!)
-     Inputmask.extendDefinitions({
-        'f': {
-            validator: "[۰-۹\u060C-\u0638\u0639-\u0648\u06A9\u06AF\u06CC\u067E\u0686\u064A\u0649\u0626\u0698 ]",
-            cardinality: 1
-        },
+    $(document).ready(function () {
+        //Persian character and numbers (and space!)
+        Inputmask.extendDefinitions({
+            'f': {
+                validator: "[۰-۹\u060C-\u0638\u0639-\u0648\u06A9\u06AF\u06CC\u067E\u0686\u064A\u0649\u0626\u0698 ]",
+                cardinality: 1
+            },
 
-        'n':
-        {
-           validator:"[1-9]",
-        },
+            'n':
+            {
+                validator: "[1-9]",
+            },
 
-        'm':
-        {
-            validator:"[۰-۹]",
-        },
+            'm':
+            {
+                validator: "[۰-۹]",
+            },
 
-        'z':
-        {
-           validator:"[۱-۹]",
-        } 
-     });
+            'z':
+            {
+                validator: "[۱-۹]",
+            }
+        });
 
-     $("#InputBirthDate").inputmask("(n999|zmmm)/(0n|10|11|12|۰z|۱۰|۱۱|۱۲)/(0n|19|29|30|31|۰z|۱m|۲m|۳۰|۳۱)",{"placeholder":"_"});
-     $("#InputName").inputmask( "f{*}");
+        $("#InputBirthDate").inputmask("(n999|zmmm)/(0n|10|11|12|۰z|۱۰|۱۱|۱۲)/(0n|19|29|30|31|۰z|۱m|۲m|۳۰|۳۱)", { "placeholder": "_" });
+        $("#InputName").inputmask("f{*}");
 
     });
 </script>

@@ -2,35 +2,47 @@
 using BookShop.Areas.Identity.Services;
 using BookShop.Classes;
 using BookShop.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace BookShop.Controllers
 {
+    
     public class AccountController : Controller
     {
         private readonly IApplicationRoleManager _roleManager;
         private readonly IApplicationUserManager _userManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
+        private readonly IConfiguration _configuration;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        public AccountController(IApplicationRoleManager roleManager, IApplicationUserManager userManager, IEmailSender emailSender, SignInManager<ApplicationUser> signInManager, ISmsSender smsSender)
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ConvertDate _convertDate;
+        public AccountController(IApplicationRoleManager roleManager, IApplicationUserManager userManager, IEmailSender emailSender, SignInManager<ApplicationUser> signInManager, ISmsSender smsSender, IConfiguration configuration, IHttpClientFactory httpClientFactory, ConvertDate convertDate)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _emailSender = emailSender;
             _signInManager = signInManager;
             _smsSender = smsSender;
+            _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
+            _convertDate = convertDate;
         }
 
         [HttpGet]
@@ -45,7 +57,9 @@ namespace BookShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = ViewModel.UserName, Email = ViewModel.Email, PhoneNumber = ViewModel.PhoneNumber, RegisterDate = DateTime.Now, IsActive = true };
+                DateTime BirthDateMiladi = _convertDate.ConvertShamsiToMiladi(ViewModel.BirthDate);
+
+                var user = new ApplicationUser { UserName = ViewModel.UserName, Email = ViewModel.Email, PhoneNumber = ViewModel.PhoneNumber, RegisterDate = DateTime.Now, IsActive = true,BirthDate= BirthDateMiladi };
                 IdentityResult result = await _userManager.CreateAsync(user, ViewModel.Password);
 
                 if (result.Succeeded)
@@ -55,6 +69,7 @@ namespace BookShop.Controllers
                         await _roleManager.CreateAsync(new ApplicationRole("کاربر"));
 
                     result = await _userManager.AddToRoleAsync(user, "کاربر");
+                    await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.DateOfBirth, BirthDateMiladi.ToString("MM/dd")));
 
                     if (result.Succeeded)
                     {
@@ -93,7 +108,7 @@ namespace BookShop.Controllers
         }
 
         [HttpGet]
-        public IActionResult SignIn()
+        public IActionResult SignIn(string ReturnUrl=null)
         {
             return View();
         }
@@ -410,6 +425,7 @@ namespace BookShop.Controllers
 
         }
 
+
         [HttpGet]
         public async Task<IActionResult> ChangePassword()
         {
@@ -427,6 +443,7 @@ namespace BookShop.Controllers
 
             return View(new ChangePasswordViewModel {UserSidebar= Sidebar });
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -503,6 +520,14 @@ namespace BookShop.Controllers
         [HttpPost]
         public IActionResult GetExternalLoginProvider(string provider)
         {
+            if(provider=="Yahoo")
+            {
+                var client_id = _configuration.GetValue<string>("YahooOAuth:ClientID");
+
+                //for host
+                //var redirectUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/yahoo-signin";
+                return Redirect($"https://api.login.yahoo.com/oauth2/request_auth?client_id={client_id}&redirect_uri=https://c4aedefa.ngrok.io/yahoo-signin&response_type=code&language=en-us");
+            }
             var RedirectUrl = Url.Action("GetCallBackAsync", "Account");
             var Properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, RedirectUrl);
             return Challenge(Properties,provider);
@@ -511,40 +536,121 @@ namespace BookShop.Controllers
         public async Task<IActionResult> GetCallBackAsync()
         {
             var info = await _signInManager.GetExternalLoginInfoAsync();
+            var Result = await ExternalLoginAsync(info);
+            if (Result == "success")
+                return RedirectToAction("Index", "Home");
+
+            else if (Result == "requiresTwoFactor")
+                return RedirectToAction("SendCode");
+
+            else
+            {
+                ModelState.AddModelError(string.Empty, Result);
+                return View("SignIn");
+            }
+        }
+
+        [Route("yahoo-signin")]
+        public async Task<IActionResult> GetYahooCallBackAsync(string code,string state)
+        {
+            HttpClient httpClient = new HttpClient();
+
+            //for host
+            //var redirectUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/yahoo-signin";
+
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("client_id", _configuration.GetValue<string>("YahooOAuth:ClientID"));
+            param.Add("client_secret", _configuration.GetValue<string>("YahooOAuth:ClientSecret"));
+
+            //for host
+            //param.Add("redirect_uri", redirectUrl);
+
+            param.Add("redirect_uri", "https://c4aedefa.ngrok.io/yahoo-signin");
+            param.Add("code", code);
+            param.Add("grant_type", "authorization_code");
+
+            FormUrlEncodedContent formatContent = new FormUrlEncodedContent(param);
+
+            var response = await httpClient.PostAsync("https://api.login.yahoo.com/oauth2/get_token", formatContent);
+
+            if(response.StatusCode==HttpStatusCode.OK)
+            {
+                string JsonResponse = response.Content.ReadAsStringAsync().Result;
+                dynamic JsonData = JsonConvert.DeserializeObject(JsonResponse);
+                string Token = JsonData.access_token;
+                string Guid = JsonData.xoauth_yahoo_guid;
+
+                var Request = new HttpRequestMessage(HttpMethod.Get, "https://social.yahooapis.com/v1/user/me/profile?format=json");
+                Request.Headers.Add("Authorization", $"Bearer {Token}");
+                var MyClient = _httpClientFactory.CreateClient();
+                response = await MyClient.SendAsync(Request);
+
+                if(response.StatusCode==HttpStatusCode.OK)
+                {
+                    JsonResponse = response.Content.ReadAsStringAsync().Result;
+                    JsonData = JsonConvert.DeserializeObject(JsonResponse);
+
+                    string email = JsonData.profile.emails[0].handle;
+                    var Claim = new List<Claim> { new Claim(ClaimTypes.Email, email) };
+                    var ClaimIdentity = new ClaimsIdentity(Claim);
+                    var Info = new ExternalLoginInfo(new ClaimsPrincipal(ClaimIdentity), "Yahoo", Guid, "Yahoo");
+
+                    var Result = await ExternalLoginAsync(Info);
+                    if (Result == "success")
+                        return RedirectToAction("Index", "Home");
+
+                    else if (Result == "requiresTwoFactor")
+                        return RedirectToAction("SendCode");
+
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, Result);
+                        return View("SignIn");
+                    }
+                }
+              
+            }
+
+            ModelState.AddModelError(string.Empty, "در ورود به سایت از طریق اکانت یاهو خطایی رخ داده است.");
+            return View("SignIn");
+        }
+
+
+        public async Task<string> ExternalLoginAsync(ExternalLoginInfo info)
+        {
             if (info == null)
-                ModelState.AddModelError(string.Empty, $"در عملیات ورود به سایت از طریق حساب {info.ProviderDisplayName} خطایی رخ داده است. ");
+                return $"در عملیات ورود به سایت از طریق حساب {info.ProviderDisplayName} خطایی رخ داده است. ";
 
             var UserEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(UserEmail);
             if (user == null)
-                ModelState.AddModelError(string.Empty, "شما عضو سایت نیستید برای ورود به سایت ابتدا باید عضو سایت شوید.");
+                return "شما عضو سایت نیستید برای ورود به سایت ابتدا باید عضو سایت شوید.";
 
             else
             {
                 var Result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
                 if (Result.Succeeded)
-                    return RedirectToAction("Index", "Home");
+                    return "success";
 
                 else if (Result.IsLockedOut)
-                {
-                    ModelState.AddModelError(string.Empty, "حساب کاربری شما به مدت 20 دقیقه به دلیل تلاش های ناموفق قفل شد.");
-                }
+                    return "حساب کاربری شما به مدت 20 دقیقه به دلیل تلاش های ناموفق قفل شد.";
 
                 else if (Result.RequiresTwoFactor)
-                    return RedirectToAction("SendCode");
+                    return "requiresTwoFactor";
 
                 else
                 {
                     var ExternalResult = await _userManager.AddLoginAsync(user, info);
-                    if(ExternalResult.Succeeded)
+                    if (ExternalResult.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, false);
-                        return RedirectToAction("Index", "Home");
+                        return "success";
                     }
+
+                    else
+                        return $"در عملیات ورود به سایت از طریق حساب {info.ProviderDisplayName} خطایی رخ داده است. ";
                 }
             }
-
-            return View("SignIn");
         }
     }
 }
