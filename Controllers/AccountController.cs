@@ -427,6 +427,7 @@ namespace BookShop.Controllers
 
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ChangePassword()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -525,7 +526,7 @@ namespace BookShop.Controllers
                 var client_id = _configuration.GetValue<string>("YahooOAuth:ClientID");
 
                 //for host
-                //var redirectUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/yahoo-signin";
+                //var redirectUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/signin-yahoo";
                 return Redirect($"https://api.login.yahoo.com/oauth2/request_auth?client_id={client_id}&redirect_uri=https://c4aedefa.ngrok.io/yahoo-signin&response_type=code&language=en-us");
             }
             var RedirectUrl = Url.Action("GetCallBackAsync", "Account");
@@ -556,7 +557,7 @@ namespace BookShop.Controllers
             HttpClient httpClient = new HttpClient();
 
             //for host
-            //var redirectUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/yahoo-signin";
+            //var redirectUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/signin-yahoo";
 
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("client_id", _configuration.GetValue<string>("YahooOAuth:ClientID"));
@@ -651,6 +652,18 @@ namespace BookShop.Controllers
                         return $"در عملیات ورود به سایت از طریق حساب {info.ProviderDisplayName} خطایی رخ داده است. ";
                 }
             }
+        }
+
+
+        public IActionResult AccessDenied(string ReturnUrl=null)
+        {
+            return View();
+        }
+
+        [Authorize(Policy = "HappyBirthDay")]
+        public IActionResult HappyBirthDay()
+        {
+            return View();
         }
     }
 }

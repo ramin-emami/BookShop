@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using BookShop.Areas.Identity.Data;
 using BookShop.Areas.Identity.Services;
@@ -73,6 +74,12 @@ namespace BookShop
                 options.Cookie.HttpOnly = true;
             });
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/SignIn";
+                //options.AccessDeniedPath = "/Home/AccessDenied";
+            });
+
             services.AddAuthentication()
               .AddGoogle(options =>
               {
@@ -85,12 +92,18 @@ namespace BookShop
                     options.ClientSecret = "9d68b57943e8035cd0771f49d2b54af10797eb4e";
                 });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AccessToUsersManager", policy => policy.RequireRole("مدیر سایت"));
+                options.AddPolicy("HappyBirthDay", policy => policy.RequireClaim(ClaimTypes.DateOfBirth, DateTime.Now.ToString("MM/dd")));
+            });
+
             services.AddPaging(options =>
-{
-    options.ViewName = "Bootstrap4";
-    options.HtmlIndicatorDown = "<i class='fa fa-sort-amount-down'></i>";
-    options.HtmlIndicatorUp = "<i class='fa fa-sort-amount-up'></i>";
-});
+            {
+                options.ViewName = "Bootstrap4";
+                options.HtmlIndicatorDown = "<i class='fa fa-sort-amount-down'></i>";
+                options.HtmlIndicatorUp = "<i class='fa fa-sort-amount-up'></i>";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

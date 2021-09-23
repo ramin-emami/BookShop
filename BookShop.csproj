@@ -66,10 +66,12 @@
     <None Include="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
     <None Include="Areas\Identity\Pages\_ViewImports.cshtml" />
     <None Include="Areas\Identity\Pages\_ViewStart.cshtml" />
+    <None Include="Views\Account\AccessDenied.cshtml" />
     <None Include="Views\Account\ChangePassword.cshtml" />
     <None Include="Views\Account\ConfirmEmail.cshtml" />
     <None Include="Views\Account\ForgetPassword.cshtml" />
     <None Include="Views\Account\ForgetPasswordConfirmation.cshtml" />
+    <None Include="Views\Account\HappyBirthDay.cshtml" />
     <None Include="Views\Account\LoginWith2fa.cshtml" />
     <None Include="Views\Account\LoginWithRecoveryCode.cshtml" />
     <None Include="Views\Account\Register.cshtml" />

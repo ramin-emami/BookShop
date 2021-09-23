@@ -23,8 +23,7 @@ namespace BookShop.Areas.Identity
                 //services.AddDefaultIdentity<BookShopUser>()
                 //    .AddEntityFrameworkStores<IdentityDBContext>();
 
-                services.AddIdentity<ApplicationUser, ApplicationRole>()
-                   .AddDefaultUI()
+                services.AddIdentity<ApplicationUser,ApplicationRole>()
                    .AddEntityFrameworkStores<IdentityDBContext>()
                    .AddErrorDescriber<ApplicationIdentityErrorDescriber>()
                    .AddDefaultTokenProviders();

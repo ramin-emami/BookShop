@@ -14,6 +14,8 @@ using ReflectionIT.Mvc.Paging;
 namespace BookShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    //[Authorize(Roles ="مدیر سایت")]
+
     public class UsersManagerController : Controller
     {
         private readonly IApplicationUserManager _userManager;
@@ -29,6 +31,8 @@ namespace BookShop.Areas.Admin.Controllers
         }
 
 
+        //[Authorize(Roles = "مدیر سایت , کاربر")]
+        [Authorize(Policy = "AccessToUsersManager")]
         public async Task<IActionResult> Index(string Msg,int page=1,int row=10)
         {
             if(Msg=="Success")
