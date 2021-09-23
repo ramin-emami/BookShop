@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
@@ -499,5 +500,51 @@ namespace BookShop.Controllers
             return View(ViewModel);
         }
 
+        [HttpPost]
+        public IActionResult GetExternalLoginProvider(string provider)
+        {
+            var RedirectUrl = Url.Action("GetCallBackAsync", "Account");
+            var Properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, RedirectUrl);
+            return Challenge(Properties,provider);
+        }
+
+        public async Task<IActionResult> GetCallBackAsync()
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                ModelState.AddModelError(string.Empty, $"در عملیات ورود به سایت از طریق حساب {info.ProviderDisplayName} خطایی رخ داده است. ");
+
+            var UserEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(UserEmail);
+            if (user == null)
+                ModelState.AddModelError(string.Empty, "شما عضو سایت نیستید برای ورود به سایت ابتدا باید عضو سایت شوید.");
+
+            else
+            {
+                var Result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+                if (Result.Succeeded)
+                    return RedirectToAction("Index", "Home");
+
+                else if (Result.IsLockedOut)
+                {
+                    ModelState.AddModelError(string.Empty, "حساب کاربری شما به مدت 20 دقیقه به دلیل تلاش های ناموفق قفل شد.");
+                }
+
+                else if (Result.RequiresTwoFactor)
+                    return RedirectToAction("SendCode");
+
+                else
+                {
+                    var ExternalResult = await _userManager.AddLoginAsync(user, info);
+                    if(ExternalResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, false);
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+            }
+
+            return View("SignIn");
+        }
     }
 }

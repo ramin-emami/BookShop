@@ -71,6 +71,13 @@ namespace BookShop
                 options.Cookie.HttpOnly = true;
             });
 
+            services.AddAuthentication()
+              .AddGoogle(options =>
+              {
+                  options.ClientId = "315654760867-d01fsd0fb847vft0fbo6hvbgqghrt5ph.apps.googleusercontent.com";
+                  options.ClientSecret = "F7rY4md1LciG24O_4J_RAPct";
+              });
+
             services.AddPaging(options =>
             {
                 options.ViewName = "Bootstrap4";
