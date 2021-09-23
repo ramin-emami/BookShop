@@ -12,6 +12,7 @@ using BookShop.Models;
 using BookShop.Models.Repository;
 using BookShop.Models.UnitOfWork;
 using BookShop.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -56,6 +57,8 @@ namespace BookShop
             services.AddScoped<ApplicationIdentityErrorDescriber>();
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<ISmsSender, SmsSender>();
+            services.AddSingleton<IAuthorizationHandler, HappyBirthDayHandler>();
+            services.AddSingleton<IAuthorizationHandler, MinimumAgeHandler>();
             services.AddHttpClient();
 
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
@@ -95,7 +98,9 @@ namespace BookShop
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AccessToUsersManager", policy => policy.RequireRole("مدیر سایت"));
-                options.AddPolicy("HappyBirthDay", policy => policy.RequireClaim(ClaimTypes.DateOfBirth, DateTime.Now.ToString("MM/dd")));
+                //options.AddPolicy("HappyBirthDay", policy => policy.RequireClaim(ClaimTypes.DateOfBirth, DateTime.Now.ToString("MM/dd")));
+                options.AddPolicy("HappyBirthDay", policy => policy.Requirements.Add(new HappyBirthDayRequirement()));
+                options.AddPolicy("Atleast18", policy => policy.Requirements.Add(new MinimumAgeRequirement(18)));
             });
 
             services.AddPaging(options =>

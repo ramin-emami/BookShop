@@ -69,7 +69,7 @@ namespace BookShop.Controllers
                         await _roleManager.CreateAsync(new ApplicationRole("کاربر"));
 
                     result = await _userManager.AddToRoleAsync(user, "کاربر");
-                    await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.DateOfBirth, BirthDateMiladi.ToString("MM/dd")));
+                    await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.DateOfBirth, BirthDateMiladi.ToShortDateString()));
 
                     if (result.Succeeded)
                     {

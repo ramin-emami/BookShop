@@ -32,7 +32,7 @@ namespace BookShop.Areas.Admin.Controllers
 
 
         //[Authorize(Roles = "مدیر سایت , کاربر")]
-        [Authorize(Policy = "AccessToUsersManager")]
+        //[Authorize(Policy = "AccessToUsersManager")]
         public async Task<IActionResult> Index(string Msg,int page=1,int row=10)
         {
             if(Msg=="Success")
