@@ -14,11 +14,13 @@ using BookShop.Models;
 using BookShop.Models.Repository;
 using BookShop.Models.UnitOfWork;
 using BookShop.Models.ViewModels;
+using BookShop.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -47,35 +49,9 @@ namespace BookShop
             //    options.CheckConsentNeeded = context => true;
             //    options.MinimumSameSitePolicy = SameSiteMode.None;
             //});
-
-
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddTransient<ConvertDate>();
-            services.AddTransient<IConvertDate, ConvertDate>();
-            services.AddTransient<BooksRepository>();
-            services.AddTransient<BookShopContext>();
-            services.AddScoped<IApplicationRoleManager, ApplicationRoleManager>();
-            services.AddScoped<IApplicationUserManager, ApplicationUserManager>();
-            services.AddScoped<ApplicationIdentityErrorDescriber>();
-            services.AddScoped<IEmailSender, EmailSender>();
-            services.AddScoped<ISmsSender, SmsSender>();
-            services.AddSingleton<IAuthorizationHandler, HappyBirthDayHandler>();
-            services.AddSingleton<IAuthorizationHandler, MinimumAgeHandler>();
-            services.AddSingleton<IAuthorizationHandler, DynamicPermissionsAuthorizationHandler>();
-            services.AddSingleton<IMvcActionsDiscoveryService, MvcActionsDiscoveryService>();
-            services.AddSingleton<ISecurityTrimmingService, SecurityTrimmingService>();
-            services.AddHttpClient();
-
-            services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
-            services.AddMvc(options =>
-            {
-                var F = services.BuildServiceProvider().GetService<IStringLocalizerFactory>();
-                var L = F.Create("ModelBindingMessages", "BookShop");
-                options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(
-                 (x) => L["انتخاب یکی از موارد لیست الزامی است."]);
-
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+            services.AddCustomPolicies();
+            services.AddCustomIdentityServices();
+            services.AddCustomApplicationServices();
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
@@ -88,33 +64,20 @@ namespace BookShop
                 //options.AccessDeniedPath = "/Home/AccessDenied";
             });
 
-            services.AddAuthentication()
-              .AddGoogle(options =>
-              {
-                  options.ClientId = "315654760867-d01fsd0fb847vft0fbo6hvbgqghrt5ph.apps.googleusercontent.com";
-                  options.ClientSecret = "F7rY4md1LciG24O_4J_RAPct";
-              })
-                .AddYahoo(options =>
-                {
-                    options.ClientId = "dj0yJmk9aWxnZVZNTGVwVXhWJnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWQz";
-                    options.ClientSecret = "9d68b57943e8035cd0771f49d2b54af10797eb4e";
-                });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("AccessToUsersManager", policy => policy.RequireRole("مدیر سایت"));
-                //options.AddPolicy("HappyBirthDay", policy => policy.RequireClaim(ClaimTypes.DateOfBirth, DateTime.Now.ToString("MM/dd")));
-                options.AddPolicy("HappyBirthDay", policy => policy.Requirements.Add(new HappyBirthDayRequirement()));
-                options.AddPolicy("Atleast18", policy => policy.Requirements.Add(new MinimumAgeRequirement(18)));
-                options.AddPolicy(ConstantPolicies.DynamicPermission, policy => policy.Requirements.Add(new DynamicPermissionRequirement()));
-            });
-
-            services.AddPaging(options =>
-            {
+            services.AddPaging(options => {
                 options.ViewName = "Bootstrap4";
                 options.HtmlIndicatorDown = "<i class='fa fa-sort-amount-down'></i>";
                 options.HtmlIndicatorUp = "<i class='fa fa-sort-amount-up'></i>";
             });
+
+
+
+
+
+
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -133,7 +96,7 @@ namespace BookShop
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            app.UseAuthentication();
+            app.UseCustomIdentityServices();
             app.UseSession();
 
             app.UseMvc(routes =>

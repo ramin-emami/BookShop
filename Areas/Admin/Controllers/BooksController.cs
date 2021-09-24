@@ -299,6 +299,11 @@ namespace BookShop.Areas.Admin.Controllers
                                             where (c.BookID == ViewModel.BookID)
                                             select c.CategoryID).ToArray();
 
+                    if (ViewModel.TranslatorID == null)
+                        ViewModel.TranslatorID = new int[] { };
+                    if (ViewModel.CategoryID == null)
+                        ViewModel.CategoryID = new int[] { };
+
                     var DeletedAuthors = RecentAuthors.Except(ViewModel.AuthorID);
                     var DeletedTranslators = RecentTranslators.Except(ViewModel.TranslatorID);
                     var DeletedCategories = RecentCategories.Except(ViewModel.CategoryID);

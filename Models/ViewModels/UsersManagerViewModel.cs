@@ -10,25 +10,32 @@ namespace BookShop.Models.ViewModels
     {
          public string Id { get; set; }
 
+        [Required(ErrorMessage ="وارد نمودن {0} الزامی است.")]
         [Display(Name="نام کاربری")]
         public string UserName { get; set; }
         
         [Display(Name ="ایمیل")]
+        [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
+        [EmailAddress(ErrorMessage ="ایمیل وارد شده صحیح نمی باشد.")]
         public string Email { get; set; }
 
         [Display(Name = "شماره موبایل")]
+        [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         public string PhoneNumber { get; set; }
 
         [Display(Name = "نام")]
+        [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         public string FirstName { get; set; }
 
         [Display(Name = "نام خانوادگی")]
+        [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         public string LastName { get; set; }
 
         [Display(Name = "تاریخ تولد")]
         public DateTime? BirthDate { get; set; }
 
         [Display(Name = "تاریخ تولد")]
+        [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         public string PersianBirthDate { get; set; }
 
         [Display(Name = "تصویر پروفایل")]

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using BookShop.Areas.Admin.Data;
 using BookShop.Models;
 using BookShop.Models.UnitOfWork;
 using BookShop.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +15,8 @@ using ReflectionIT.Mvc.Paging;
 
 namespace BookShop.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    //[Area("Admin")]
+    //[DisplayName("مدیریت مترجمان")]
     public class TranslatorsController : Controller
     {
         private readonly IUnitOfWork _UW;
@@ -22,6 +26,8 @@ namespace BookShop.Areas.Admin.Controllers
             _UW = UW;
         }
 
+        //[Authorize(Policy = ConstantPolicies.DynamicPermission)]
+        //[DisplayName("مشاهده مترجمین")]
         public async Task<IActionResult> Index(int page = 1, int row = 10)
         {
             var Translators = _UW.BaseRepository<Translator>().FindAllAsync();

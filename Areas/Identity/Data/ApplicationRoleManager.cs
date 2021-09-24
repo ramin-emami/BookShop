@@ -11,6 +11,7 @@ namespace BookShop.Areas.Identity.Data
     public class ApplicationRoleManager : RoleManager<ApplicationRole> , IApplicationRoleManager
     {
         private readonly IdentityErrorDescriber _errors;
+        private readonly IApplicationUserManager _userManager;
         private readonly ILookupNormalizer _keyNormalizer;
         private readonly ILogger<ApplicationRoleManager> _logger;
         private readonly IEnumerable<IRoleValidator<ApplicationRole>> _roleValidators;
@@ -21,7 +22,8 @@ namespace BookShop.Areas.Identity.Data
             ILookupNormalizer keyNormalizer,
             ILogger<ApplicationRoleManager> logger,
             IEnumerable<IRoleValidator<ApplicationRole>> roleValidators,
-            IdentityErrorDescriber errors) :
+            IdentityErrorDescriber errors,
+            IApplicationUserManager userManager) :
             base(store, roleValidators, keyNormalizer, errors, logger)
         {
             _errors = errors;
@@ -29,6 +31,7 @@ namespace BookShop.Areas.Identity.Data
             _logger = logger;
             _store = store;
             _roleValidators = roleValidators;
+            _userManager = userManager;
         }
 
 
@@ -69,8 +72,8 @@ namespace BookShop.Areas.Identity.Data
             }
 
             var CurrentRoleClaimValues = Role.Claims.Where(r => r.ClaimType == RoleClaimType).Select(r => r.ClaimValue).ToList();
-            if (SelectedRoleClaimValues == null)
-                SelectedRoleClaimValues = new List<string>();
+            if (CurrentRoleClaimValues == null)
+                CurrentRoleClaimValues = new List<string>();
 
             var NewClaimValuesToAdd = SelectedRoleClaimValues.Except(CurrentRoleClaimValues).ToList();
             foreach(var claim in NewClaimValuesToAdd)
@@ -92,6 +95,31 @@ namespace BookShop.Areas.Identity.Data
             }
 
             return await UpdateAsync(Role);
+        }
+
+        public async Task<List<UsersViewModel>> GetUsersInRoleAsync(string RoleID)
+        {
+            var UserIds = (from r in Roles
+                           where (r.Id == RoleID)
+                           from u in r.Users
+                           select u.UserId).ToList();
+
+            return await _userManager.Users.Where(user => UserIds.Contains(user.Id))
+                .Select(user => new UsersViewModel
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    PhoneNumber = user.PhoneNumber,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    BirthDate = user.BirthDate,
+                    IsActive = user.IsActive,
+                    LastVisitDateTime = user.LastVisitDateTime,
+                    Image = user.Image,
+                    RegisterDate = user.RegisterDate,
+                    Roles = user.Roles.Select(u => u.Role.Name),
+                }).AsNoTracking().ToListAsync();
         }
     }
 }

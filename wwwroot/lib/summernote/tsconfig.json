@@ -7,6 +7,6 @@
   },
   "include": [
     "./src/**/*.js",
-    "./src/**/*.ts"
+    "./src/**/*.ts", "../../../Areas/Identity/Services/AddCustomIdentityExtentions.cs"
   ]
 }

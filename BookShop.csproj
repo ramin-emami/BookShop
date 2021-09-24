@@ -30,6 +30,7 @@
     <None Include="Areas\Admin\Views\Cities\Edit.cshtml" />
     <None Include="Areas\Admin\Views\Cities\Index.cshtml" />
     <None Include="Areas\Admin\Views\Dashboard\Index.cshtml" />
+    <None Include="Areas\Admin\Views\DynamicAccess\Index.cshtml" />
     <None Include="Areas\Admin\Views\Languages\Create.cshtml" />
     <None Include="Areas\Admin\Views\Languages\Delete.cshtml" />
     <None Include="Areas\Admin\Views\Languages\Edit.cshtml" />
@@ -89,6 +90,7 @@
     <None Include="Views\Shared\Error.cshtml" />
     <None Include="Views\Shared\_Admin.cshtml" />
     <None Include="Views\Shared\_AdminLoginPartial.cshtml" />
+    <None Include="Views\Shared\_AdminSidebar.cshtml" />
     <None Include="Views\Shared\_CookieConsentPartial.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
     <None Include="Views\Shared\_LoginPartial.cshtml" />

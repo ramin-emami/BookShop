@@ -46,7 +46,7 @@
                                 @Html.DisplayFor(modelItem => item.Description)
                             </td>
                             <td class="text-center">
-                                <a class="btn btn-info btn-icon">
+                                <a href="/Admin/UsersManager/GetUsersInRole/@item.RoleID" class="btn btn-info btn-icon">
                                     <i class="fa fa-user p-1">
                                         @Html.DisplayFor(modelItem => item.UsersCount)
                                     </i>

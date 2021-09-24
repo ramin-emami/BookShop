@@ -6,10 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using BookShop.Models;
 using BookShop.Models.ViewModels;
+using BookShop.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace BookShop.Models
 {
-    public class BookShopContext : DbContext
+    public class BookShopContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserClaim<string>, ApplicationUserRole, IdentityUserLogin<string>, ApplicationRoleClaim, IdentityUserToken<string>>
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -20,6 +23,8 @@ namespace BookShop.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new Author_BookMap());
             modelBuilder.ApplyConfiguration(new CustomerMap());
             modelBuilder.ApplyConfiguration(new Order_BookMap());
@@ -29,6 +34,26 @@ namespace BookShop.Models
             modelBuilder.Entity<Book>().HasQueryFilter(b =>(bool)!b.Delete);
             modelBuilder.Entity<Book>().Property(b => b.Delete).HasDefaultValueSql("0");
             //modelBuilder.Entity<Book>().Property(b => b.PublishDate).HasDefaultValueSql("CONVERT(datetime,GetDate())");
+
+            modelBuilder.Entity<ApplicationRole>().ToTable("AspNetRoles").ToTable("AppRoles");
+
+            modelBuilder.Entity<ApplicationUserRole>().ToTable("AppUserRole");
+
+            modelBuilder.Entity<ApplicationUserRole>()
+                .HasOne(userRole => userRole.Role)
+                .WithMany(role => role.Users).HasForeignKey(r => r.RoleId);
+
+            modelBuilder.Entity<ApplicationUser>().ToTable("AppUsers");
+
+            modelBuilder.Entity<ApplicationUserRole>()
+               .HasOne(userRole => userRole.User)
+               .WithMany(role => role.Roles).HasForeignKey(r => r.UserId);
+
+            modelBuilder.Entity<ApplicationRoleClaim>().ToTable("AppRoleClaim");
+
+            modelBuilder.Entity<ApplicationRoleClaim>()
+                .HasOne(roleclaim => roleclaim.Role)
+                .WithMany(claim => claim.Claims).HasForeignKey(c => c.RoleId);
         }
 
         public DbSet<Book> Books { get; set; }

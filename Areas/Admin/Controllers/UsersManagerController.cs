@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using BookShop.Areas.Admin.Data;
 using BookShop.Areas.Identity.Data;
 using BookShop.Classes;
 using BookShop.Models.ViewModels;
@@ -14,8 +16,7 @@ using ReflectionIT.Mvc.Paging;
 namespace BookShop.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles ="مدیر سایت")]
-
+    [DisplayName("مدیریت کاربران")]
     public class UsersManagerController : Controller
     {
         private readonly IApplicationUserManager _userManager;
@@ -31,8 +32,8 @@ namespace BookShop.Areas.Admin.Controllers
         }
 
 
-        //[Authorize(Roles = "مدیر سایت , کاربر")]
-        //[Authorize(Policy = "AccessToUsersManager")]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
+        [DisplayName("مشاهده کاربران")]
         public async Task<IActionResult> Index(string Msg,int page=1,int row=10)
         {
             if(Msg=="Success")
@@ -45,6 +46,9 @@ namespace BookShop.Areas.Admin.Controllers
             return View(PagingModel);
         }
 
+
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
+        [DisplayName("مدیریت کاربر")]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -59,6 +63,8 @@ namespace BookShop.Areas.Admin.Controllers
             }
         }
 
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
+        [DisplayName("ویرایش اطلاعات کاربر")]
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
@@ -90,6 +96,9 @@ namespace BookShop.Areas.Admin.Controllers
                 {
                     IdentityResult Result;
                     var RecentRoles = await _userManager.GetRolesAsync(User);
+                    if (ViewModel.Roles == null)
+                        ViewModel.Roles = new string[] { };
+
                     var DeleteRoles = RecentRoles.Except(ViewModel.Roles);
                     var AddRoles = ViewModel.Roles.Except(RecentRoles);
 
@@ -129,6 +138,8 @@ namespace BookShop.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = ConstantPolicies.DynamicPermission)]
+        [DisplayName("حذف کاربر")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -361,6 +372,12 @@ namespace BookShop.Areas.Admin.Controllers
 
             return RedirectToAction("Details", new { id = UserId });
 
+        }
+
+        public async Task<IActionResult> GetUsersInRole(string id,int page=1,int row=10)
+        {
+            var PagingModel = PagingList.Create(await _roleManager.GetUsersInRoleAsync(id), row, page);
+            return View("Index", PagingModel);
         }
 
     }
