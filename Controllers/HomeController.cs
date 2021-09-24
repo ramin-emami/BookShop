@@ -13,6 +13,7 @@ namespace BookShop.Controllers
     [AllowAnonymous]
     public class HomeController : Controller
     {
+
         public IActionResult Index(string id)
         {
             //var UserInfo = User;
@@ -29,6 +30,15 @@ namespace BookShop.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+
+        public IActionResult test()
+        {
+            int i = 0;
+            int num = 78 / i;
+
+            return View();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BookShop.Areas.Identity.Services;
+﻿using BookShop.Areas.Api.Services;
+using BookShop.Areas.Identity.Services;
 using BookShop.Classes;
 using BookShop.Models;
 using BookShop.Models.Repository;
@@ -21,8 +22,10 @@ namespace BookShop.Services
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ConvertDate>();
             services.AddTransient<IConvertDate, ConvertDate>();
+            services.AddTransient<IUsersRepository, UsersRepository>();
             services.AddTransient<BooksRepository>();
             services.AddTransient<BookShopContext>();
+            services.AddTransient<IjwtService, jwtService>();
             services.AddHttpContextAccessor();
             services.AddHttpClient();
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });

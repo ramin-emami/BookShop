@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using BookShop.Attributes;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +9,20 @@ using System.Threading.Tasks;
 
 namespace BookShop.Models.ViewModels
 {
-    public class RegisterViewModel : GoogleRecaptchaModelBase
+    public class RegisterViewModel : RegisterBaseViewModel
+    {
+        [GoogleRecaptchaValidation]
+        [BindProperty(Name = "g-recaptcha-response")]
+        public string GoogleRecaptchaResponse { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "تکرار کلمه عبور")]
+        [Compare("Password", ErrorMessage = "کلمه عبور وارد شده با تکرار کلمه عبور مطابقت ندارد.")]
+        public string ConfirmPassword { get; set; }
+
+    }
+
+    public class RegisterBaseViewModel
     {
         [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         [EmailAddress(ErrorMessage = "ایمیل شما نامعتبر است.")]
@@ -24,11 +39,6 @@ namespace BookShop.Models.ViewModels
         [Display(Name = "تاریخ تولد")]
         public string BirthDate { get; set; }
 
-        [DataType(DataType.Password)]
-        [Display(Name = "تکرار کلمه عبور")]
-        [Compare("Password", ErrorMessage = "کلمه عبور وارد شده با تکرار کلمه عبور مطابقت ندارد.")]
-        public string ConfirmPassword { get; set; }
-
         [Display(Name = "نام کاربری")]
         [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         public string UserName { get; set; }
@@ -36,9 +46,25 @@ namespace BookShop.Models.ViewModels
         [Display(Name = "شماره موبایل")]
         [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         public string PhoneNumber { get; set; }
+
+        public bool EmailConfirmed { get; set; }
+
+        public bool PhoneNumberConfirmed { get; set; }
     }
 
-    public class SignInViewModel
+    public class SignInViewModel : SignInBaseViewModel
+    {
+        [Display(Name = "مرا به خاطر بسپار؟")]
+        public bool RememberMe { get; set; }
+
+        [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
+        [StringLength(4, ErrorMessage = "کد امنیتی باید دارای 4 کاراکتر باشد.")]
+        [Display(Name = "کد امنیتی")]
+        public string CaptchaCode { get; set; }
+
+    }
+
+    public class SignInBaseViewModel
     {
         [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         [Display(Name = "نام کاربری")]
@@ -48,15 +74,6 @@ namespace BookShop.Models.ViewModels
         [DataType(DataType.Password)]
         [Display(Name = "کلمه عبور")]
         public string Password { get; set; }
-
-        [Display(Name = "مرا به خاطر بسپار؟")]
-        public bool RememberMe { get; set; }
-
-        [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
-        [StringLength(4, ErrorMessage = "کد امنیتی باید دارای 4 کاراکتر باشد.")]
-        [Display(Name = "کد امنیتی")]
-        public string CaptchaCode { get; set; }
-
     }
 
     public class ForgetPasswordViewModel

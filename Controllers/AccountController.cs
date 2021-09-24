@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace BookShop.Controllers
 {
-    
+    [ApiExplorerSettings(IgnoreApi =true)]
     public class AccountController : Controller
     {
         private readonly IApplicationRoleManager _roleManager;
@@ -58,7 +58,6 @@ namespace BookShop.Controllers
             if (ModelState.IsValid)
             {
                 DateTime BirthDateMiladi = _convertDate.ConvertShamsiToMiladi(ViewModel.BirthDate);
-
                 var user = new ApplicationUser { UserName = ViewModel.UserName, Email = ViewModel.Email, PhoneNumber = ViewModel.PhoneNumber, RegisterDate = DateTime.Now, IsActive = true,BirthDate= BirthDateMiladi };
                 IdentityResult result = await _userManager.CreateAsync(user, ViewModel.Password);
 

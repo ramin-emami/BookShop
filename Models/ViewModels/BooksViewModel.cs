@@ -43,7 +43,10 @@ namespace BookShop.Models.ViewModels
         [Required(ErrorMessage = "وارد نمودن {0} الزامی است.")]
         [Display(Name = "موجودی")]
         public int Stock { get; set; }
-        public string File { get; set; }
+
+        public string ImageBase64 { get; set; }
+
+        public byte[] Image { get; set; }
 
         [Display(Name = "تعداد صفحات")]
         public int NumOfPages { get; set; }
@@ -123,10 +126,10 @@ namespace BookShop.Models.ViewModels
         public string PublisherName { get; set; }
 
         [Display(Name = "تاریخ انتشار در سایت")]
-        public DateTime? PublishDate { get; set; }
+        public string PublishDate { get; set; }
 
         [Display(Name = "وضعیت")]
-        public bool? IsPublish { get; set; }
+        public string IsPublish { get; set; }
 
         [Display(Name = "نویسندگان")]
         public string Author { get; set; }
