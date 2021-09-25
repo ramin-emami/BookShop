@@ -183,8 +183,12 @@ namespace BookShop.Models.Repository
                 {
                     using (var memorySteam = new MemoryStream())
                     {
+                        string FileExtension = Path.GetExtension(ViewModel.Image.FileName);
                         await ViewModel.Image.CopyToAsync(memorySteam);
-                        book.Image = memorySteam.ToArray();
+                        var types = FileExtentions.FileType.Image;
+                        bool result = FileExtentions.IsValidFile(memorySteam.ToArray(), types, FileExtension.Replace('.', ' '));
+                        if(result)
+                            book.Image = memorySteam.ToArray();
                     }
                 }
 
