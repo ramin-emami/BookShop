@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BookShop.Models.ViewModels;
 using ImageMagick;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -98,6 +99,21 @@ namespace BookShop.Areas.Admin.Controllers
             Image.Refresh();
         }
 
+        [HttpGet]
+        public IActionResult UploadLargeFile()
+        {
+            return View();
+        }
+
+        [HttpPost,ValidateAntiForgeryToken]
+        public IActionResult UploadLargeFile(UploadLargeFileViewModel ViewModel)
+        {
+            if(ModelState.IsValid)
+            {
+                //upload file
+            }
+            return View();
+        }
 
         public IActionResult SaveImageToPdf()
         {

@@ -84,7 +84,7 @@ namespace BookShop.Models.Repository
                              u.Book.Title,
                              l.LanguageName,
                          }).Where(a=>a.Author.Contains(Author.TrimStart().TrimEnd()) && a.Translator.Contains(Translator.TrimStart().TrimEnd())&& a.Category.Contains(Category.TrimStart().TrimEnd()))
-                         .GroupBy(b => b.BookID).Select(g => new { BookID = g.Key, BookGroups = g }).ToList(); ;
+                         .GroupBy(b => b.BookID).Select(g => new { BookID = g.Key, BookGroups = g }).ToList();
 
             foreach (var item in Books)
             {
