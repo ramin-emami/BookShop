@@ -47,7 +47,8 @@ namespace BookShop.Areas.Api.Controllers.v1
         [HttpPut]
         public async Task<ApiResult> EditBook(BooksCreateEditViewModel ViewModel)
         {
-            if (await _UW.BooksRepository.EditBookAsync(ViewModel))
+            var result = await _UW.BooksRepository.EditBookAsync(ViewModel);
+            if (result.IsSuccess==true)
                 return Ok();
             else
                 return BadRequest("در انجام عملیات خطایی رخ داده است.");

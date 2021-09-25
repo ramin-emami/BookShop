@@ -28,7 +28,7 @@ namespace BookShop.Attributes
             var files = value as IList<IFormFile>;
             if (files == null)
             {
-                return false;
+                return true;
             }
 
             foreach (var postedFile in files)

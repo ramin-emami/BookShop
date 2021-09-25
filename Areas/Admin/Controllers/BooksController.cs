@@ -98,38 +98,31 @@ namespace BookShop.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool result = true;
-                if(ViewModel.File!=null)
+                UploadFileResult result = new UploadFileResult();
+                string NewFileName = null;
+                if (ViewModel.File != null)
                 {
-                    string FileExtension = Path.GetExtension(ViewModel.File.FileName);
-                    var types = FileExtentions.FileType.PDF;
-                    using (var memory = new MemoryStream())
-                    {
-                        await ViewModel.File.CopyToAsync(memory);
-                        result = FileExtentions.IsValidFile(memory.ToArray(), types, FileExtension.Replace('.', ' '));
-                        if (result)
-                        {
-                            string NewFileName = String.Concat(Guid.NewGuid().ToString());
-                            var path = $"{_env.WebRootPath}/BookFiles/{NewFileName}";
-                            using (var stream = new FileStream(path, FileMode.Create))
-                            {
-                                await ViewModel.File.CopyToAsync(stream);
-                            }
-                            ViewModel.FileName = NewFileName;
-                        }
-                        else
-                            ModelState.AddModelError(string.Empty, "فایل انتخاب شده معتبر نمی باشد.");
-                    }
-                      
+                    NewFileName = _UW.BooksRepository.CheckFileName(ViewModel.File.FileName);
+                    var path = $"{_env.WebRootPath}/BookFiles/{NewFileName}";
+                    result = await _UW.BooksRepository.UploadFileAsync(ViewModel.File, path);
                 }
 
-                if(result)
+                if (result.IsSuccess == true || result.IsSuccess==null)
                 {
+                    ViewModel.FileName = NewFileName;
                     if (await _UW.BooksRepository.CreateBookAsync(ViewModel))
                         return RedirectToAction("Index");
                     else
                         ViewBag.Error = "در انجام عملیات خطایی رخ داده است.";
-                }              
+                }
+
+                else
+                {
+                    foreach (var item in result.Errors)
+                    {
+                        ModelState.AddModelError("", item);
+                    }
+                }
             }
 
             ViewBag.LanguageID = new SelectList(_UW.BaseRepository<Language>().FindAll(), "LanguageID", "LanguageName");
@@ -156,6 +149,13 @@ namespace BookShop.Areas.Admin.Controllers
             var Book =await _UW.BaseRepository<Book>().FindByIDAsync(id);
             if (Book != null)
             {
+                var path = $"{_env.WebRootPath}/BookFiles/{Book.File}";
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Delete(path);
+                    Book.File = null;
+                }
+            
                 Book.Delete = true;
                 await _UW.Commit();
                 return RedirectToAction("Index");
@@ -205,10 +205,9 @@ namespace BookShop.Areas.Admin.Controllers
                                          PublishYear = b.PublishYear,
                                          Summary = b.Summary,
                                          Weight = b.Weight,
-                                         RecentIsPublish = (bool)b.IsPublish,
                                          PublishDate = b.PublishDate,
                                          ImageByte=b.Image,
-
+                                         FileName=b.File,
                                      }).FirstAsync();
 
                     int[] AuthorsArray = await (from a in _UW._Context.Author_Books
@@ -250,16 +249,52 @@ namespace BookShop.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                if (await _UW.BooksRepository.EditBookAsync(ViewModel))
+                UploadFileResult result = new UploadFileResult();
+                string NewFileName = ViewModel.FileName;
+                string path;
+                if (ViewModel.File != null)
                 {
-                    ViewBag.MsgSuccess = "ذخیره تغییرات با موفقیت انجام شد.";
-                    return View(ViewModel);
+                    NewFileName = _UW.BooksRepository.CheckFileName(ViewModel.File.FileName);
+                    path = $"{_env.WebRootPath}/BookFiles/{NewFileName}";
+                    result = await _UW.BooksRepository.UploadFileAsync(ViewModel.File, path);
                 }
+
+                if (result.IsSuccess == true || result.IsSuccess == null)
+                {
+                    if(result.IsSuccess==true)
+                    {
+                        path = $"{_env.WebRootPath}/BookFiles/{ViewModel.FileName}";
+                        if (System.IO.File.Exists(path))
+                        {
+                            System.IO.File.Delete(path);
+                        }
+                    }
+
+                    ViewModel.FileName = NewFileName;
+                    var operationResult = await _UW.BooksRepository.EditBookAsync(ViewModel);
+                    if (operationResult.IsSuccess==true)
+                    {
+                        ViewBag.MsgSuccess = "ذخیره تغییرات با موفقیت انجام شد.";
+                        return View(ViewModel);
+                    }
+                    else
+                    {
+                        foreach(var item in operationResult.Errors)
+                            ModelState.AddModelError("", item);
+                        return View(ViewModel);
+                    }
+                }
+
                 else
                 {
-                    ViewBag.MsgFailed = "در ذخیره تغییرات خطایی رخ داده است.";
+                    foreach (var item in result.Errors)
+                    {
+                        ModelState.AddModelError("", item);
+                    }
+
                     return View(ViewModel);
                 }
+
             }
 
             else

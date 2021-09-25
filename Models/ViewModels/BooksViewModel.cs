@@ -33,7 +33,6 @@ namespace BookShop.Models.ViewModels
         [Display(Name = "عنوان ")]
         public string Title { get; set; }
 
-        public bool RecentIsPublish { get; set; }
 
         [Display(Name = "خلاصه")]
         public string Summary { get; set; }
@@ -48,7 +47,7 @@ namespace BookShop.Models.ViewModels
 
         public string ImageBase64 { get; set; }
 
-        [UploadFileExtensions(".png,.jpg,.gif,jpeg",ErrorMessage ="تصویر انتخاب شده معتبر نمی باشد.")]
+        [UploadFileExtensions(".png,.jpg,.gif,jpeg", ErrorMessage = "تصویر انتخاب شده معتبر نمی باشد.")]
         public IFormFile Image { get; set; }
 
         public byte[] ImageByte { get; set; }
@@ -86,8 +85,8 @@ namespace BookShop.Models.ViewModels
 
         public int[] CategoryID { get; set; }
 
-        [Required(ErrorMessage = "بارگزاری فایل کتاب الزامی است.")]
-        [UploadFileExtensions(".pdf",ErrorMessage ="فایل معتبر نمی باشد.")]
+        //[Required(ErrorMessage = "بارگزاری فایل کتاب الزامی است.")]
+        [UploadFileExtensions(".pdf", ErrorMessage = "فایل معتبر نمی باشد.")]
         public IFormFile File { get; set; }
 
         public string FileName { get; set; }
