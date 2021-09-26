@@ -184,5 +184,4 @@ namespace BookShop.Models.ViewModels
         public string RecoveryCode { get; set; }
     }
 
-
 }

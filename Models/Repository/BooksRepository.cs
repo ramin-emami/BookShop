@@ -337,7 +337,7 @@ namespace BookShop.Models.Repository
                 FileNameCount = _UW.BaseRepository<Book>().FindByConditionAsync(f => f.File == fileName).Result.Count();
                 j++;
             }
-            
+
             return fileName;
         }
     }

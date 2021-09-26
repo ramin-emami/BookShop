@@ -139,7 +139,7 @@ namespace BookShop.Areas.Admin.Controllers
         {
             var BookInfo = _UW._Context.Query<ReadAllBook>().Where(b => b.BookID == id).First();
 
-            return View(BookInfo);
+            return PartialView(BookInfo);
         }
 
         [Authorize(Policy = ConstantPolicies.DynamicPermission)]

@@ -1,6 +1,8 @@
 ﻿using BookShop.Areas.Identity.Data;
 using BookShop.Areas.Identity.Services;
 using BookShop.Classes;
+using BookShop.Models;
+using BookShop.Models.UnitOfWork;
 using BookShop.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -33,7 +35,8 @@ namespace BookShop.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ConvertDate _convertDate;
-        public AccountController(IApplicationRoleManager roleManager, IApplicationUserManager userManager, IEmailSender emailSender, SignInManager<ApplicationUser> signInManager, ISmsSender smsSender, IConfiguration configuration, IHttpClientFactory httpClientFactory, ConvertDate convertDate)
+        private readonly IUnitOfWork _UW;
+        public AccountController(IApplicationRoleManager roleManager, IApplicationUserManager userManager, IEmailSender emailSender, SignInManager<ApplicationUser> signInManager, ISmsSender smsSender, IConfiguration configuration, IHttpClientFactory httpClientFactory, ConvertDate convertDate, IUnitOfWork UW)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -43,6 +46,7 @@ namespace BookShop.Controllers
             _configuration = configuration;
             _httpClientFactory = httpClientFactory;
             _convertDate = convertDate;
+            _UW = UW;
         }
 
         [HttpGet]
