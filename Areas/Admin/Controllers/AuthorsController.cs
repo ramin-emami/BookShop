@@ -17,7 +17,7 @@ namespace BookShop.Areas.Admin.Controllers
     public class AuthorsController : Controller
     {
         private readonly IUnitOfWork _UW;
-
+        private readonly string NotFoundAuthor= "نویسنده ای با این مشخصات یافت نشد!!!";
         public AuthorsController(IUnitOfWork UW)
         {
             _UW = UW;
@@ -63,15 +63,12 @@ namespace BookShop.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
-                return NotFound();
-            }
+                ModelState.AddModelError(string.Empty, NotFoundAuthor);
 
             var author = await _UW.BaseRepository<Author>().FindByIDAsync(id);
             if (author == null)
-            {
-                return NotFound();
-            }
+                ModelState.AddModelError(string.Empty, NotFoundAuthor);
+
             return PartialView("_Edit",author);
         }
 

@@ -138,7 +138,7 @@ namespace BookShop.Areas.Admin.Controllers
         public IActionResult Details(int id)
         {
             var BookInfo = _UW._Context.Query<ReadAllBook>().Where(b => b.BookID == id).First();
-
+          
             return PartialView(BookInfo);
         }
 

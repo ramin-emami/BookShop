@@ -1,5 +1,10 @@
 ﻿@model BookShop.Models.Author
 
+<style>    
+    ul {
+        margin:0px !important;
+    }
+</style>
 <div class="modal fade" id="myModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -9,25 +14,33 @@
             </div>
 
             <div class="modal-body">
-                <form asp-action="Edit">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="AuthorID" />
-                    <input type="hidden" name="IsValid" value="@ViewData.ModelState.IsValid.ToString()" />
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="form-group col-md-12">
-                                <label asp-for="FirstName" class="control-label"></label>
-                                <input asp-for="FirstName" class="form-control" />
-                                <span asp-validation-for="FirstName" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label asp-for="LastName" class="control-label"></label>
-                                <input asp-for="LastName" class="form-control" />
-                                <span asp-validation-for="LastName" class="text-danger"></span>
+                @if (ViewData.ModelState.IsValid == false)
+                {
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-0"></div>
+                }
+                else
+                {
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="AuthorID" />
+                        <input type="hidden" name="IsValid" value="@ViewData.ModelState.IsValid.ToString()" />
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label asp-for="FirstName" class="control-label"></label>
+                                    <input asp-for="FirstName" class="form-control" />
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label asp-for="LastName" class="control-label"></label>
+                                    <input asp-for="LastName" class="form-control" />
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>                
+                    </form>
+                }
+
             </div>
 
             <div class="modal-footer">

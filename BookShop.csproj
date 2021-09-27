@@ -20,6 +20,10 @@
 		<None Include="Areas\Admin\Views\Authors\Details.cshtml" />
 		<None Include="Areas\Admin\Views\Authors\Edit.cshtml" />
 		<None Include="Areas\Admin\Views\Authors\Index.cshtml" />
+		<None Include="Areas\Admin\Views\Authors\_AuthorsTable.cshtml" />
+		<None Include="Areas\Admin\Views\Authors\_Create.cshtml" />
+		<None Include="Areas\Admin\Views\Authors\_Delete.cshtml" />
+		<None Include="Areas\Admin\Views\Authors\_Edit.cshtml" />
 		<None Include="Areas\Admin\Views\Books\AdvancedSearch.cshtml" />
 		<None Include="Areas\Admin\Views\Books\Create.cshtml" />
 		<None Include="Areas\Admin\Views\Books\Details.cshtml" />
@@ -33,7 +37,9 @@
 		<None Include="Areas\Admin\Views\Cities\Index.cshtml" />
 		<None Include="Areas\Admin\Views\Dashboard\Index.cshtml" />
 		<None Include="Areas\Admin\Views\DynamicAccess\Index.cshtml" />
+		<None Include="Areas\Admin\Views\File\ImageProcess.cshtml" />
 		<None Include="Areas\Admin\Views\File\Upload.cshtml" />
+		<None Include="Areas\Admin\Views\File\UploadLargeFile.cshtml" />
 		<None Include="Areas\Admin\Views\Languages\Create.cshtml" />
 		<None Include="Areas\Admin\Views\Languages\Delete.cshtml" />
 		<None Include="Areas\Admin\Views\Languages\Edit.cshtml" />
@@ -76,6 +82,7 @@
 		<None Include="Views\Account\HappyBirthDay.cshtml" />
 		<None Include="Views\Account\LoginWith2fa.cshtml" />
 		<None Include="Views\Account\LoginWithRecoveryCode.cshtml" />
+		<None Include="Views\Account\Profile.cshtml" />
 		<None Include="Views\Account\Register.cshtml" />
 		<None Include="Views\Account\ResetPassword.cshtml" />
 		<None Include="Views\Account\ResetPasswordConfirmation.cshtml" />
@@ -95,16 +102,20 @@
 		<None Include="Views\Shared\_CookieConsentPartial.cshtml" />
 		<None Include="Views\Shared\_Layout.cshtml" />
 		<None Include="Views\Shared\_LoginPartial.cshtml" />
+		<None Include="Views\Shared\_Notification.cshtml" />
 		<None Include="Views\Shared\_UserSidebar.cshtml" />
 		<None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
 		<None Include="Views\_ViewImports.cshtml" />
 		<None Include="Views\_ViewStart.cshtml" />
+		<None Include="wwwroot\BookFiles\Advanced.pdf" />
+		<None Include="wwwroot\BookFiles\Advanced1.pdf" />
 		<None Include="wwwroot\css\fonts\Yekan.svg" />
 		<None Include="wwwroot\css\jquery.md.bootstrap.datetimepicker.style.css.map" />
 		<None Include="wwwroot\fonts\Yekan.svg" />
 		<None Include="wwwroot\images\banner1.svg" />
 		<None Include="wwwroot\images\banner2.svg" />
 		<None Include="wwwroot\images\banner3.svg" />
+		<None Include="wwwroot\js\Ajax.js" />
 		<None Include="wwwroot\js\bootstrap-fileinput.js" />
 		<None Include="wwwroot\js\carbon.js" />
 		<None Include="wwwroot\js\comboTreePlugin.js" />
@@ -848,7 +859,6 @@
 	  <Folder Include="Areas\Api\Data\" />
 	  <Folder Include="Areas\Api\Models\" />
 	  <Folder Include="Areas\Api\Views\" />
-	  <Folder Include="wwwroot\BookFiles\" />
 	  <Folder Include="wwwroot\GalleryFiles\" />
 	</ItemGroup>
 

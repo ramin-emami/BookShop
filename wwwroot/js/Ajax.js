@@ -3,18 +3,29 @@
 
     $(document).on('click','button[data-toggle="ajax-modal"]',function () {
         var url = $(this).data('url');
-        $.get(url).done(function (result) {
+        $.ajax({
+            url: url,
+            beforeSend: function () { $("body").preloader(); },
+            complete: function () { $("body").preloader('remove'); },
+            error: function () {
+                ShowSweetAlert();
+            }
+        }).done(function (result) {
             placeholder.html(result);
             placeholder.find('.modal').modal('show');
         });
     });
 
     placeholder.on('click', 'button[data-save="modal"]', function () {
+        $("body").preloader();
         var form = $(this).parents(".modal").find('form');
         var actionUrl = form.attr('action');
         var dataToSend = new FormData(form.get(0));
 
-        $.ajax({ url: actionUrl, type: "post", data: dataToSend, processData: false, contentType: false }).done(function (data) {
+        $.ajax({
+            url: actionUrl, type: "post", data: dataToSend, processData: false, contentType: false, error: function () {
+                ShowSweetAlert();
+            }}).done(function (data) {
             var newBody = $(".modal-body", data);
             placeholder.find(".modal-body").replaceWith(newBody);
 
@@ -22,18 +33,29 @@
             if (IsValid) {
                 var notificationPlaceholder = $("#notification");
                 var notificationUrl = notificationPlaceholder.data('url');
-                $.get(notificationUrl).done(function (notification) {
+                $.ajax({ url: notificationUrl, error: function () { ShowSweetAlert(); } }).done(function (notification) {
                     notificationPlaceholder.html(notification);
                 });
 
                 var tableElement = $("#myTable");
                 var tableUrl = tableElement.data('url');
-                $.get(tableUrl).done(function (table) {
+                $.ajax({ url: tableUrl, error: function () { ShowSweetAlert(); } }).done(function (table) {
                     $("#tableContent").html(table);
                 });
 
                 placeholder.find(".modal").modal('hide');
             }
         });
+
+        $("body").preloader('remove');
     });
 });
+
+function ShowSweetAlert() {
+    Swal.fire({
+        type: 'error',
+        title: 'خطایی رخ داده است !!!',
+        text: 'لطفا تا برطرف شدن خطا شکیبا باشید.',
+        confirmButtonText: 'بستن'
+    });
+}
