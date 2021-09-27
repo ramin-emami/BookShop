@@ -359,5 +359,42 @@ namespace BookShop.Areas.Admin.Controllers
             return new FileStreamResult(memoryStream, "image/png");
 
         }
+
+
+        [HttpGet]
+        public IActionResult InsertOrUpdateBookImage(int id)
+        {
+            var Book = _UW._Context.Books.Where(b => b.BookID == id).Select(b => new ImageBookViewModel { BookID = b.BookID, ImageByte = b.Image }).FirstOrDefault();
+            if (Book == null)
+                ModelState.AddModelError("", "کتاب با این مشخصات یافت نشد.");
+
+            return PartialView("_InsertOrUpdateBookImage", Book);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> InsertOrUpdateBookImage(ImageBookViewModel ViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var Book = await _UW.BaseRepository<Book>().FindByIDAsync(ViewModel.BookID);
+                using (var memorySteam = new MemoryStream())
+                {
+                    string FileExtension = Path.GetExtension(ViewModel.Image.FileName);
+                    await ViewModel.Image.CopyToAsync(memorySteam);
+                    var types = FileExtentions.FileType.Image;
+                    bool result = FileExtentions.IsValidFile(memorySteam.ToArray(), types, FileExtension.Replace('.', ' '));
+                    if (result)
+                    {
+                        Book.Image = memorySteam.ToArray();
+                        await _UW.Commit();
+                        ViewModel.ImageByte = memorySteam.ToArray();
+                        TempData["Notifications"] = "آپلود فایل با موفقیت انجام شد.";
+                    }
+                    else
+                        ModelState.AddModelError("", "فایل تصویر کتاب نامعتبر است.");
+                }
+            }
+            return PartialView("_InsertOrUpdateBookImage", ViewModel);
+        }
     }
 }
