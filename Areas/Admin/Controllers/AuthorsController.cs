@@ -34,12 +34,17 @@ namespace BookShop.Areas.Admin.Controllers
             {
                 {"row",row},
             };
+
+            var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            if (isAjax)
+                return PartialView("_AuthorsTable", PagingModel);
+
             return View("Index",PagingModel);
         }
 
         public IActionResult Create()
         {
-            return View();
+            return PartialView("_Create");
         }
 
         [HttpPost]
@@ -50,9 +55,9 @@ namespace BookShop.Areas.Admin.Controllers
             {
                 await _UW.BaseRepository<Author>().CreateAsync(author);
                 await _UW.Commit();
-                return RedirectToAction(nameof(Index));
+                TempData["notification"] = "درج اطلاعات با موفقیت انجام شد.";
             }
-            return View(author);
+            return PartialView("_Create",author);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -67,7 +72,7 @@ namespace BookShop.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            return View(author);
+            return PartialView("_Edit",author);
         }
 
 
@@ -98,9 +103,9 @@ namespace BookShop.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                TempData["notification"] = "ویرایش اطلاعات با موفقیت انجام شد.";
             }
-            return View(author);
+            return PartialView("_Edit",author);
         }
 
         public async Task<IActionResult> Delete(int? id)
@@ -116,7 +121,7 @@ namespace BookShop.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            return View(author);
+            return PartialView("_Delete",author);
         }
 
 
@@ -134,8 +139,10 @@ namespace BookShop.Areas.Admin.Controllers
             {
                 _UW.BaseRepository<Author>().Delete(Author);
                 await _UW.Commit();
-                return RedirectToAction(nameof(Index));
+                TempData["notification"] = "حذف اطلاعات با موفقیت انجام شد.";
             }
+
+            return PartialView("_Delete", Author);
         }
 
 
@@ -171,6 +178,11 @@ namespace BookShop.Areas.Admin.Controllers
                 return View(await Author);
             }
           
+        }
+
+        public IActionResult Notification()
+        {
+            return PartialView("_Notification",TempData["notification"]);
         }
     }
 }

@@ -221,13 +221,4 @@ jQuery(document).ready(function($) {
         });
     }
 
-    $("button[data-toggle='ajax-modal']").click(function () {
-        var placeholder = $("#modal-placeholder");
-        var url = $(this).data('url');
-        $.get(url).done(function (result) {
-            placeholder.html(result);
-            placeholder.find('.modal').modal('show');
-        });
-    });
-
 </script>
