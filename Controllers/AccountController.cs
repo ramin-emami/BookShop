@@ -663,6 +663,32 @@ namespace BookShop.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
+
+            UserSidebarViewModel Sidebar = new UserSidebarViewModel()
+            {
+                FullName = user.FirstName + " " + user.LastName,
+                LastVisit = user.LastVisitDateTime,
+                RegisterDate = user.RegisterDate,
+                Image = user.Image,
+            };
+
+            ViewBag.CityID = new SelectList(_UW.BaseRepository<City>().FindAll(), "CityID", "CityName");
+            ViewBag.ProvinceID = new SelectList(_UW.BaseRepository<Provice>().FindAll(), "ProvinceID", "ProvinceName");
+            return View(new ProfileViewModel { UserSidebar = Sidebar });
+        }
+
+        public async Task<IActionResult> UpdateCity(int id)
+        {
+            var Cities =await _UW.BaseRepository<City>().FindByConditionAsync(p => p.ProvinceID == id);
+            return Json(JsonConvert.SerializeObject(Cities));
+        }
+
         [Authorize(Policy = "HappyBirthDay")]
         public IActionResult HappyBirthDay()
         {
