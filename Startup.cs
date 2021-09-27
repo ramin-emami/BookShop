@@ -105,6 +105,7 @@ namespace BookShop
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var cachePeriod = env.IsDevelopment() ? "5" : "605800";
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -115,13 +116,37 @@ namespace BookShop
                 app.UseHsts();
             }
 
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "node_modules")),
+                RequestPath = "/" + "node_modules",
+            });
+
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "CacheFiles")),
+                OnPrepareResponse = ctx =>
+                {
+                    ctx.Context.Response.Headers.Append("Cache-Control", $"public,max-age={cachePeriod}");
+                },
+                RequestPath = "/CacheFiles",
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                //OnPrepareResponse = ctx =>
+                //{
+                //    ctx.Context.Response.Headers.Append("Cache-Control", $"public,max-age={cachePeriod}");
+                //},
+                //RequestPath="/MyStaticFiles",
+            });
+            app.UseNodeModules(env.ContentRootPath);
             app.UseCookiePolicy();
             app.UseCustomIdentityServices();
             app.UseSession();
             app.UseSwaggerAndUI();
-           
+
 
             app.UseMvc(routes =>
             {

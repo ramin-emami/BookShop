@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BookShop.Models.ViewModels;
 using ImageMagick;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -125,6 +126,14 @@ namespace BookShop.Areas.Admin.Controllers
 
             var FileStream = new FileStream(FolderPath + "PdfImage.pdf", FileMode.Open, FileAccess.Read);
             return new FileStreamResult(FileStream, "application/pdf");
+        }
+
+        [Authorize]
+        [Route("{FileName}")]
+        public IActionResult Video(string FileName)
+        {
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "Videos", FileName);
+            return PhysicalFile(path, "application/octet-stream");
         }
     }
 }
